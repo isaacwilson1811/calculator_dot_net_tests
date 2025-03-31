@@ -2,6 +2,7 @@ import { expect, browser } from '@wdio/globals'
 import SalesTax from '../pageobjects/salestax.page.js'
 import Salary from '../pageobjects/salary.page.js'
 import Payment from '../pageobjects/payment.page.js'
+import CompoundInterest from '../pageobjects/compoundinterest.page.js'
 
 describe('Sales Tax Calculator', () => {
     it('Go to page', async () => {
@@ -39,3 +40,14 @@ describe('Payment Calculator', () => {
     })
 })
 
+describe('Compound Interest Calculator', () => {
+    it('Go to page', async () => {
+        await CompoundInterest.navigateToPage()
+        const currentUrl = await browser.getUrl()
+        await expect(currentUrl).toBe('https://www.calculator.net/compound-interest-calculator.html')
+    })
+    it('Enter a value and calculate', async () => {
+        await CompoundInterest.calculate({interestRate:'2'})
+        await expect(CompoundInterest.result).toHaveText('2.01844%')
+    })
+})
