@@ -3,7 +3,7 @@ import Page from './page.js';
 
 class Salary extends Page {
 
-    get inputSalaryAmmount () {
+    get inputSalaryAmount () {
         return $('//input[@id="camount"]')
     }
 
@@ -16,7 +16,7 @@ class Salary extends Page {
     }
 
     async calculate ({salaryAmount}) {
-        await this.inputSalaryAmmount.setValue(salaryAmount)
+        await this.inputSalaryAmount.setValue(salaryAmount)
         await this.buttonCalculate.click()
     }
 
