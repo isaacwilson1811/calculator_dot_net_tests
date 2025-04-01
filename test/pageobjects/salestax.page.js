@@ -16,15 +16,23 @@ class SalesTax extends Page {
     }
 
     get buttonCalculate () {
-        return $('//input[@type="submit"][@value="Calculate"]');
+        return $('//input[@type="submit"][@value="Calculate"]')
     }
 
     get buttonClear () {
         return $('//input[@type="button"][@value="Clear"]')
     }
 
+    get resultHeader () {
+        return $('//h2[@class="h2result"]')
+    }
+
     get result () {
         return $('(//*[@class="verybigtext"])[3]//font//b')
+    }
+
+    get resultsArray () {
+        return $$('//div/div[@class="verybigtext"]')
     }
 
     get errorMessage () {
@@ -43,31 +51,41 @@ class SalesTax extends Page {
         return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]')
     }
 
-    get successMessage () {
-        return $('//h2[@class="h2result"]')
-    }
-
     async calculate ({beforeTax,taxRate,afterTax}) {
+        // Check the input params. If it has a value: Input the value, add to count. Does not have a value: Input an empty string, don't count.
+        // Then click the calculate button.
         let valueCount = 0
         beforeTax ? (await this.inputBeforeTax.setValue(beforeTax), valueCount++ ): await this.inputBeforeTax.setValue('');
         taxRate ? (await this.inputTaxRate.setValue(taxRate), valueCount++ ): await this.inputTaxRate.setValue('');
         afterTax ? (await this.inputAfterTax.setValue(afterTax), valueCount++ ): await this.inputAfterTax.setValue('');
         await this.buttonCalculate.click()
-
-        let expectedErrorMessage = '', expectError = false;
-
-        // These error conditions are in this exact order because the website prioritizes the error message in this exact order.
-        // Each error condition overrides the previous error condition.
+        // Check to expect a result or an error.
+        // These error conditions are in this exact order because the website prioritizes the error messages in this exact order.
+        let expectError = false, expectedErrorMessage;
+        // When not enough values are entered (Requires at least 2) Lowest priority. Gets replaced by next errors.
         if (valueCount <=1) {
             expectedErrorMessage = 'Please provide at least two values to calculate.'; expectError = true;
         }
+        // When afterTax is less than beforeTax. (If both beforeTax and taxRate are entered: afterTax is treated as empty and not checked for this error.)
         if ( ((afterTax && beforeTax) && !taxRate) && (Number(afterTax) < Number(beforeTax)) ){
             expectedErrorMessage = 'After tax price can not be smaller than before tax price.'; expectError = true;
         }
+        // When beforeTax is Zero or less. Highest priority. Will replace all other errors.
         if (beforeTax && ( Number(beforeTax) <= 0 )) {
             expectedErrorMessage = 'Please provide a valid before tax price.'; expectError = true;
         }
-        expectError ? await expect(this.errorMessage).toHaveText(expectedErrorMessage) : await expect(this.successMessage).toBeExisting();
+        // Expect the specific error message or expect the result header
+        expectError ? await expect(this.errorMessage).toHaveText(expectedErrorMessage) : await expect(this.resultHeader).toBeExisting();
+
+        // WORK IN PROGRESS
+        // If we expected results: Check the results
+        if (!expectError) {
+            let results = await this.resultsArray
+            results.forEach(element => {
+                console.log(JSON.stringify(element))
+            });
+            
+        }
     }
 
     navigateToPage () {
