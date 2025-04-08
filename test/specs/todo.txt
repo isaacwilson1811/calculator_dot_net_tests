@@ -1,0 +1,21 @@
+spec files to make:
+
+test.salestax.ui.js
+test.salestax.boundary.js
+test.salestax.error.js
+test.salestax.positive.js
+
+test.salary.ui.js
+test.salary.boundary.js
+test.salary.error.js
+test.salary.positive.js
+
+test.payment.ui.js
+test.payment.boundary.js
+test.payment.error.js
+test.payment.positive.js
+
+test.compound.ui.js
+test.compound.boundary.js
+test.compound.error.js
+test.compound.positive.js
