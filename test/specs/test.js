@@ -6,7 +6,7 @@ import CompoundInterest from '../pageobjects/compoundinterest.page.js'
 
 describe('Sales Tax Calculator', () => {
     it('Go to page', async () => {
-        await SalesTax.navigateToPage()
+        await SalesTax.openComponentPage()
         const currentUrl = await browser.getUrl()
         await expect(currentUrl).toBe('https://www.calculator.net/sales-tax-calculator.html')
     })

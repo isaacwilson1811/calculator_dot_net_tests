@@ -1,35 +1,62 @@
 import SalesTax from '../pageobjects/salestax.page.js'
-const accentColor = '#003366'
-const componentDescriptionText = 'The Sales Tax Calculator can compute any one of the following, given inputs for the remaining two: before-tax price, sale tax rate, and final, or after-tax price.'
+import GUI from '../requirements/GUI.js'
 
-describe('Locate the heading element used for the component title', () => {
+// To run this test:
+// npx wdio run wdio.conf.js --spec test/specs/test.salestax.ui.js
 
-    beforeEach(async () =>{
-        await SalesTax.navigateToPage()
+describe ( 'Heading element used for the component\'s title', () => {
+    beforeEach ( async () => { await SalesTax.openComponentPage () } )
+
+    it ( 'Should be the only instance of an h1 tag following semantic correctness', async () => {
+        await SalesTax.checkElementCount ({ element: 'heading list', expectedCount: 1 })
     })
 
-    it('Should be the only instance of h1 tag', async () => {
-        await SalesTax.countHeadingElements()
+    it ( 'Should have text matching the component\'s title text', async () => {
+        await SalesTax.checkElementText ({ element: 'heading', expectedText: GUI['Design Requirements'].language.approvedAppNames.calculators['Sales Tax Calculator'] })
     })
 
-    it('Should have text matching \'Sales Tax Calculator\'', async () => {
-        await SalesTax.checkElementText('header','Sales Tax Calculator')
-    })
-
-    it('Should have text color of accentColor ', async () => {
-        await SalesTax.checkCSSProperty('color', accentColor)
+    it ( 'Should have text color of pre-defined accent color', async () => {
+        await SalesTax.checkElementColor ({ element: 'heading', expectedColor: GUI['Design Requirements'].visuals.approvedColors.accentText['Silian Grail'] })
     })
 })
 
+describe ( 'Text element used for the component description', () => {
+    beforeEach ( async () => { await SalesTax.openComponentPage () })
 
-describe('Locate the text element used for the component description', () => {
-
-    beforeEach(async () =>{
-        await SalesTax.navigateToPage()
+    it ( 'Should have text matching component description', async () => {
+        await SalesTax.checkElementText ({ element: 'description', expectedText: GUI['Design Requirements'].language.approvedDescriptiveText.appID34534535 })
     })
 
-    it('Should have text matching component description text', async () => {
-        await SalesTax.checkElementText('description',`${componentDescriptionText}`)
+})
+
+describe ( 'Container element holding value inputs and function buttons', () => {
+    beforeEach ( async () => { await SalesTax.openComponentPage () })
+
+    it ( 'Should be horizontally centered in the layout', async () => {
+        await SalesTax.checkElementAlign ({ element: 'input container children', expectedAlign: 'center' })
+    })
+
+    it ( 'Should have appropriate background color', async () => {
+        await SalesTax.checkElementBackgroundColor ({ element: 'input container', expectedColor: GUI['Design Requirements'].visuals.approvedColors.backgrounds['Bone'] })
+    })
+
+    it ( 'Should have appropriate border stylings applied', async () => {
+        await SalesTax.checkElementBorder ({
+            element: 'input container', edgesToCheck: ['top', 'bottom', 'left', 'right'],
+            expectedColor: GUI['Design Requirements'].visuals.approvedColors.borders['Eggshell'],
+            expectedWidth: GUI['Design Requirements'].visuals.lines['primary line width'],
+            expectedStyle: GUI['Design Requirements'].visuals.lines['primary line style']
+        })
+    })
+
+    it ( 'Should contain an input labeled \'Before Tax Price\' with a dollar symbol on the left side of the input area', async () => {
+        await SalesTax.checkElementExists ({ element: 'before tax price input' })
+        await SalesTax.checkElementText ({ element: 'before tax price label', expectedText: 'Before Tax Price' })
+        await SalesTax.checkElementBackgroundImage ({
+            element: 'before tax price input',
+            expectedImage: GUI['Design Requirements'].visuals.symbols.localizations['USA'].dollar,
+            expectedPosition: '0% 50%'
+        })
     })
 
 })

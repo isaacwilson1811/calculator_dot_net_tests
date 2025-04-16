@@ -1,67 +1,97 @@
 import { $, expect } from '@wdio/globals'
-import BasePage from './basepage.js';
+import BasePage from './basepage.js'
 
 class SalesTax extends BasePage {
+    endpoint = 'sales-tax-calculator.html'
+    locate (name) {
+        let getElement = undefined
+        switch(name) {
+            case 'h1':
+            case 'title':
+            case 'component title':
+            case 'heading':
+                getElement = this.componentHeading
+                break
+            case 'heading list': getElement = this.arrayOfComponentHeading; break
+            case 'description': getElement = this.componentDescriptionParagraph; break
+            case 'input container': getElement = this.inputPanel; break
+            case 'input container children': getElement = this.inputPanelTable; break
+            case 'before tax price input': getElement = this.inputBeforeTax; break
+            case 'before tax price label': getElement = this.inputBeforeTaxLabel; break
+            default: getElement = undefined
+        }
+        return getElement
+    }
+    get inputPanel () { return $('//div[@class="panel"]') }
+    get inputPanelTable () { return $('//div[@class="panel"]/table') }
+    get componentHeading () { return $('//h1') }
+    get arrayOfComponentHeading () { return $$('//h1') }
+    get componentDescriptionParagraph () { return $('(//div[@id="content"]/p)[1]') }
+    get inputBeforeTax () { return $('//input[@id="beforetax"]') }
+    get inputBeforeTaxLabel () { return $('//input[@id="beforetax"]/../../td[@align="right"]') }
+    get inputTaxRate () { return $('//input[@type="text"][@name="taxrate"]') }
+    get inputAfterTax () { return $('//input[@type="text"][@name="finalprice"][@id="finalprice"]') }
+    get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
+    get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
+    get resultHeader () { return $('//h2[@class="h2result"]') }
+    get result () { return $('(//*[@class="verybigtext"])[3]//font//b') }
+    get resultsArray () { return $$('//div/div[@class="verybigtext"]') }
+    get errorMessage () { return $('//font[@color="red"]') }
+    get errorNotValidBeforeTax () { return $('//font[@color="red"][contains(text(),"Please provide a valid before tax price.")]') }
+    get errorLessThan2ValuesProvided () { return $('//font[@color="red"][contains(text(),"Please provide at least two values to calculate.")]') }
+    get errorAfterTaxCanNotBeSmallerThanBeforeTax () { return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]') }    
 
-    get componentHeading () {
-        return $$('//h1')
+    async checkElementExists ({element}) {
+        await expect(this.locate(element)).toBeExisting()
     }
 
-    get componentDescription () {
-        return $('(//div[@id="content"]/p)[1]')
+    async checkElementCount ({element, expectedCount}) {
+        const elementArray = await this.locate(element)
+        await expect(elementArray.length).toBe(expectedCount)
     }
 
-    get inputBeforeTax () {
-        return $('//input[@id="beforetax"]')
+    async checkElementText ({element, expectedText}) {
+        await expect(this.locate(element)).toHaveText(expectedText)
     }
 
-    get inputTaxRate () {
-        return $('//input[@type="text"][@name="taxrate"]')
+    async checkElementColor ({element, expectedColor}) {
+        const color = await this.locate(element).getCSSProperty('color')
+        await expect(color.parsed.hex).toBe(expectedColor)
     }
 
-    get inputAfterTax () {
-        return $('//input[@type="text"][@name="finalprice"][@id="finalprice"]')
+    async checkElementBackgroundColor ({element, expectedColor}) {
+        const color = await this.locate(element).getCSSProperty('background-color')
+        await expect(color.parsed.hex).toBe(expectedColor)
     }
 
-    get buttonCalculate () {
-        return $('//input[@type="submit"][@value="Calculate"]')
+    async checkElementBackgroundImage ({element, expectedImage, expectedPosition}) {
+        const e = this.locate(element)
+        const URL = await e.getCSSProperty('background-image')
+        const position = await e.getCSSProperty('background-position')
+        await expect(URL.value).toBe(expectedImage)
+        await expect(position.value).toBe(expectedPosition)
     }
 
-    get buttonClear () {
-        return $('//input[@type="button"][@value="Clear"]')
+    async checkElementBorder ({element, edgesToCheck, expectedWidth, expectedStyle, expectedColor}) {
+        const e = await this.locate(element)
+        edgesToCheck.forEach(async (edge) => {
+            const width = await e.getCSSProperty(`border-${edge}-width`)
+            const style = await e.getCSSProperty(`border-${edge}-style`)
+            const color = await e.getCSSProperty(`border-${edge}-color`)
+            await expect(width.parsed.string).toBe(expectedWidth)
+            await expect(style.parsed.string).toBe(expectedStyle)
+            await expect(color.parsed.hex).toBe(expectedColor)
+        })
+        
     }
 
-    get resultHeader () {
-        return $('//h2[@class="h2result"]')
-    }
-
-    get result () {
-        return $('(//*[@class="verybigtext"])[3]//font//b')
-    }
-
-    get resultsArray () {
-        return $$('//div/div[@class="verybigtext"]')
-    }
-
-    get errorMessage () {
-        return $('//font[@color="red"]')
-    }
-
-    get errorNotValidBeforeTax () {
-        return $('//font[@color="red"][contains(text(),"Please provide a valid before tax price.")]')
-    }
-
-    get errorLessThan2ValuesProvided () {
-        return $('//font[@color="red"][contains(text(),"Please provide at least two values to calculate.")]')
-    }
-
-    get errorAfterTaxCanNotBeSmallerThanBeforeTax () {
-        return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]')
+    async checkElementAlign ({element, expectedAlign}) {
+        const align = await this.locate(element).getAttribute('align')
+        await expect(align).toBe(expectedAlign)
     }
 
     async calculate ({beforeTax,taxRate,afterTax}) {
         // Check the input params. If it has a value: Input the value, add to count. Does not have a value: Input an empty string, don't count.
-        // Then click the calculate button.
         let valueCount = 0
         beforeTax ? (await this.inputBeforeTax.setValue(beforeTax), valueCount++ ): await this.inputBeforeTax.setValue('');
         taxRate ? (await this.inputTaxRate.setValue(taxRate), valueCount++ ): await this.inputTaxRate.setValue('');
@@ -95,31 +125,7 @@ class SalesTax extends BasePage {
             
         }
     }
-
-    navigateToPage () {   
-        return super.open('sales-tax-calculator.html')
-    }
-
-    async countHeadingElements() {        
-        const elementArray = await $$('//h1')
-        await expect(elementArray.length).toBe(1)
-    }
-
-    async checkElementText(element,expectedText) {
-        if (element == 'header') {
-            element = this.componentHeading
-            await expect(element[0]).toHaveText(`${expectedText}`)
-        } else if (element == 'description'){
-            element = this.componentDescription
-            await expect(element).toHaveText(`${expectedText}`)
-        }
-    }
-
-
-    async checkCSSProperty(prop,value) {
-        const color = await $('//h1').getCSSProperty(`${prop}`)
-        await expect(color.parsed.hex).toBe(`${value}`)
-    }
+    openComponentPage () { return super.open(this.endpoint) }
 }
 
 export default new SalesTax()
