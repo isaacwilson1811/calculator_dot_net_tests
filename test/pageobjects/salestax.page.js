@@ -23,6 +23,8 @@ class SalesTax extends BasePage {
             case 'after tax price input': getElement = this.inputAfterTax; break
             case 'after tax price label': getElement = this.inputAfterTaxLabel; break
             case 'calculate button': getElement = this.buttonCalculate; break
+            case 'clear button': getElement = this.buttonClear; break
+            case 'result heading': getElement = this.resultHeading; break
             default: getElement = undefined
         }
         return getElement
@@ -40,7 +42,7 @@ class SalesTax extends BasePage {
     get inputAfterTaxLabel () { return $('//input[@type="text"][@name="finalprice"][@id="finalprice"]/../../td[@align="right"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
-    get resultHeader () { return $('//h2[@class="h2result"]') }
+    get resultHeading () { return $('//h2[@class="h2result"]') }
     get result () { return $('(//*[@class="verybigtext"])[3]//font//b') }
     get resultsArray () { return $$('//div/div[@class="verybigtext"]') }
     get errorMessage () { return $('//font[@color="red"]') }
@@ -51,6 +53,13 @@ class SalesTax extends BasePage {
     async checkElementExists ({element}) {
         await expect(this.locate(element)).toBeExisting()
     }
+
+    // async checkElementIsChildOfParent ({child,parent}) {
+    //    const p = await this.locate(parent)
+    //    const c = await this.locate(child)
+    //    const found = await p.c
+    //    await expect(found).toBeExisting()
+    // }
 
     async checkElementCount ({element, count}) {
         const elementArray = await this.locate(element)
@@ -102,6 +111,19 @@ class SalesTax extends BasePage {
         const elementAlign = await this.locate(element).getAttribute('align')
         await expect(elementAlign).toBe(align)
     }
+    
+    async hoverOverElement ({element}) {
+        const e = await this.locate(element)
+        await e.moveTo({ xOffset: -10, yOffset: 2})
+        await e.moveTo({ xOffset: 10, yOffset: -2})
+        await e.moveTo()
+    }
+
+    async checkElementHoverBackgroundColor ({element, before, after}) {
+        await this.checkElementBackgroundColor({element: element, color: before})
+        await this.hoverOverElement({element: element})
+        await this.checkElementBackgroundColor({element: element, color: after})
+    }
 
     async calculate ({beforeTax,taxRate,afterTax}) {
         // Check the input params. If it has a value: Input the value, add to count. Does not have a value: Input an empty string, don't count.
@@ -126,7 +148,7 @@ class SalesTax extends BasePage {
             expectedErrorMessage = 'Please provide a valid before tax price.'; expectError = true;
         }
         // Expect the specific error message or expect the result header
-        expectError ? await expect(this.errorMessage).toHaveText(expectedErrorMessage) : await expect(this.resultHeader).toBeExisting();
+        expectError ? await expect(this.errorMessage).toHaveText(expectedErrorMessage) : await expect(this.resultHeading).toBeExisting();
 
         // WORK IN PROGRESS
         // If we expected results: Check the results
