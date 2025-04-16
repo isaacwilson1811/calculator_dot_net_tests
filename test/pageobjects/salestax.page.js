@@ -1,11 +1,15 @@
-import { $, $$, expect } from '@wdio/globals'
-import Page from './page.js';
+import { $, expect } from '@wdio/globals'
+import BasePage from './basepage.js';
 
-class SalesTax extends Page {
+class SalesTax extends BasePage {
 
-    // get componentHeading () {
-    //     return $$('//h1')
-    // }
+    get componentHeading () {
+        return $$('//h1')
+    }
+
+    get componentDescription () {
+        return $('(//div[@id="content"]/p)[1]')
+    }
 
     get inputBeforeTax () {
         return $('//input[@id="beforetax"]')
@@ -96,24 +100,25 @@ class SalesTax extends Page {
         return super.open('sales-tax-calculator.html')
     }
 
-    async countHeadingElements() {
-        const brokenthing = $('//sdkjfhsdkfjhsdfkjh').waitForExist()
-        
-        const elementArray = await $$('//h1').waitForExist()
-        console.log('Array length:', elementArray.length)
-        console.log('Has matcher?', typeof expect(elementArray).toBeElementsArrayOfSize)
-        await expect(elementArray.length).toBe(22222)
+    async countHeadingElements() {        
+        const elementArray = await $$('//h1')
+        await expect(elementArray.length).toBe(1)
     }
 
-    async checkElementText(expectedText) {
-        const elementArray = await $$('//h1')
-        await expect(elementArray[0]).toHaveText(`${expectedText}`)
+    async checkElementText(element,expectedText) {
+        if (element == 'header') {
+            element = this.componentHeading
+            await expect(element[0]).toHaveText(`${expectedText}`)
+        } else if (element == 'description'){
+            element = this.componentDescription
+            await expect(element).toHaveText(`${expectedText}`)
+        }
     }
 
 
     async checkCSSProperty(prop,value) {
-        const elementArray = await $$('//h1')
-        await expect(elementArray[0]).toHaveCSSProperty(`${prop}`,`${value}`)
+        const color = await $('//h1').getCSSProperty(`${prop}`)
+        await expect(color.parsed.hex).toBe(`${value}`)
     }
 }
 

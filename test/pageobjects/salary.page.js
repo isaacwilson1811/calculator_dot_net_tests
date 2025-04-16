@@ -1,7 +1,7 @@
 import { $ } from '@wdio/globals'
-import Page from './page.js';
+import BasePage from './basepage.js';
 
-class Salary extends Page {
+class Salary extends BasePage {
 
     get inputSalaryAmount () {
         return $('//input[@id="camount"]')
