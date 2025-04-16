@@ -1,7 +1,11 @@
-import { $, expect } from '@wdio/globals'
+import { $, $$, expect } from '@wdio/globals'
 import Page from './page.js';
 
 class SalesTax extends Page {
+
+    // get componentHeading () {
+    //     return $$('//h1')
+    // }
 
     get inputBeforeTax () {
         return $('//input[@id="beforetax"]')
@@ -83,14 +87,34 @@ class SalesTax extends Page {
             let results = await this.resultsArray
             results.forEach(element => {
                 console.log(JSON.stringify(element))
-            });
+            })
             
         }
     }
 
-    navigateToPage () {
+    navigateToPage () {   
         return super.open('sales-tax-calculator.html')
+    }
+
+    async countHeadingElements() {
+        const brokenthing = $('//sdkjfhsdkfjhsdfkjh').waitForExist()
+        
+        const elementArray = await $$('//h1').waitForExist()
+        console.log('Array length:', elementArray.length)
+        console.log('Has matcher?', typeof expect(elementArray).toBeElementsArrayOfSize)
+        await expect(elementArray.length).toBe(22222)
+    }
+
+    async checkElementText(expectedText) {
+        const elementArray = await $$('//h1')
+        await expect(elementArray[0]).toHaveText(`${expectedText}`)
+    }
+
+
+    async checkCSSProperty(prop,value) {
+        const elementArray = await $$('//h1')
+        await expect(elementArray[0]).toHaveCSSProperty(`${prop}`,`${value}`)
     }
 }
 
-export default new SalesTax();
+export default new SalesTax()
