@@ -18,6 +18,11 @@ class SalesTax extends BasePage {
             case 'input container children': getElement = this.inputPanelTable; break
             case 'before tax price input': getElement = this.inputBeforeTax; break
             case 'before tax price label': getElement = this.inputBeforeTaxLabel; break
+            case 'sales tax rate input': getElement = this.inputTaxRate; break
+            case 'sales tax rate label': getElement = this.inputTaxRateLabel; break
+            case 'after tax price input': getElement = this.inputAfterTax; break
+            case 'after tax price label': getElement = this.inputAfterTaxLabel; break
+            case 'calculate button': getElement = this.buttonCalculate; break
             default: getElement = undefined
         }
         return getElement
@@ -30,7 +35,9 @@ class SalesTax extends BasePage {
     get inputBeforeTax () { return $('//input[@id="beforetax"]') }
     get inputBeforeTaxLabel () { return $('//input[@id="beforetax"]/../../td[@align="right"]') }
     get inputTaxRate () { return $('//input[@type="text"][@name="taxrate"]') }
+    get inputTaxRateLabel () { return $('//input[@type="text"][@name="taxrate"]/../../td[@align="right"]') }
     get inputAfterTax () { return $('//input[@type="text"][@name="finalprice"][@id="finalprice"]') }
+    get inputAfterTaxLabel () { return $('//input[@type="text"][@name="finalprice"][@id="finalprice"]/../../td[@align="right"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
     get resultHeader () { return $('//h2[@class="h2result"]') }
@@ -45,49 +52,55 @@ class SalesTax extends BasePage {
         await expect(this.locate(element)).toBeExisting()
     }
 
-    async checkElementCount ({element, expectedCount}) {
+    async checkElementCount ({element, count}) {
         const elementArray = await this.locate(element)
-        await expect(elementArray.length).toBe(expectedCount)
+        await expect(elementArray.length).toBe(count)
     }
 
-    async checkElementText ({element, expectedText}) {
-        await expect(this.locate(element)).toHaveText(expectedText)
+    async checkElementAttribute ({element, attribute, value}) {
+        const e = await this.locate(element)
+        const attributeValue = await e.getAttribute(attribute)
+        await expect(attributeValue).toBe(value)
     }
 
-    async checkElementColor ({element, expectedColor}) {
-        const color = await this.locate(element).getCSSProperty('color')
-        await expect(color.parsed.hex).toBe(expectedColor)
+    async checkElementText ({element, text}) {
+        await expect(this.locate(element)).toHaveText(text)
     }
 
-    async checkElementBackgroundColor ({element, expectedColor}) {
-        const color = await this.locate(element).getCSSProperty('background-color')
-        await expect(color.parsed.hex).toBe(expectedColor)
+    async checkElementColor ({element, color}) {
+        const elementColor = await this.locate(element).getCSSProperty('color')
+        await expect(elementColor.parsed.hex).toBe(color)
     }
 
-    async checkElementBackgroundImage ({element, expectedImage, expectedPosition}) {
+    async checkElementBackgroundColor ({element, color}) {
+        const elementBGcolor = await this.locate(element).getCSSProperty('background-color')
+        await expect(elementBGcolor.parsed.hex).toBe(color)
+    }
+
+    async checkElementBackgroundImage ({element, image, position}) {
         const e = this.locate(element)
-        const URL = await e.getCSSProperty('background-image')
-        const position = await e.getCSSProperty('background-position')
-        await expect(URL.value).toBe(expectedImage)
-        await expect(position.value).toBe(expectedPosition)
+        const imageURL = await e.getCSSProperty('background-image')
+        const imagePosition = await e.getCSSProperty('background-position')
+        await expect(imageURL.value).toBe(image)
+        await expect(imagePosition.value).toBe(position)
     }
 
-    async checkElementBorder ({element, edgesToCheck, expectedWidth, expectedStyle, expectedColor}) {
+    async checkElementBorder ({element, edgesToCheck, width, style, color}) {
         const e = await this.locate(element)
         edgesToCheck.forEach(async (edge) => {
-            const width = await e.getCSSProperty(`border-${edge}-width`)
-            const style = await e.getCSSProperty(`border-${edge}-style`)
-            const color = await e.getCSSProperty(`border-${edge}-color`)
-            await expect(width.parsed.string).toBe(expectedWidth)
-            await expect(style.parsed.string).toBe(expectedStyle)
-            await expect(color.parsed.hex).toBe(expectedColor)
+            const edgeWidth = await e.getCSSProperty(`border-${edge}-width`)
+            const edgeStyle = await e.getCSSProperty(`border-${edge}-style`)
+            const edgeColor = await e.getCSSProperty(`border-${edge}-color`)
+            await expect(edgeWidth.parsed.string).toBe(width)
+            await expect(edgeStyle.parsed.string).toBe(style)
+            await expect(edgeColor.parsed.hex).toBe(color)
         })
         
     }
 
-    async checkElementAlign ({element, expectedAlign}) {
-        const align = await this.locate(element).getAttribute('align')
-        await expect(align).toBe(expectedAlign)
+    async checkElementAlign ({element, align}) {
+        const elementAlign = await this.locate(element).getAttribute('align')
+        await expect(elementAlign).toBe(align)
     }
 
     async calculate ({beforeTax,taxRate,afterTax}) {
