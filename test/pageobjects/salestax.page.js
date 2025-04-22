@@ -1,34 +1,44 @@
 import { $, expect } from '@wdio/globals'
 import BasePage from './basepage.js'
+import GUI from '../requirements/GUI.js'
 
 class SalesTax extends BasePage {
+    openComponentPage () { return super.open(this.endpoint) }
     endpoint = 'sales-tax-calculator.html'
-    locate (name) {
-        let getElement = undefined
-        switch(name) {
-            case 'h1':
-            case 'title':
-            case 'component title':
-            case 'heading':
-                getElement = this.componentHeading
-                break
-            case 'heading list': getElement = this.arrayOfComponentHeading; break
-            case 'description': getElement = this.componentDescriptionParagraph; break
-            case 'input container': getElement = this.inputPanel; break
-            case 'input container children': getElement = this.inputPanelTable; break
-            case 'before tax price input': getElement = this.inputBeforeTax; break
-            case 'before tax price label': getElement = this.inputBeforeTaxLabel; break
-            case 'sales tax rate input': getElement = this.inputTaxRate; break
-            case 'sales tax rate label': getElement = this.inputTaxRateLabel; break
-            case 'after tax price input': getElement = this.inputAfterTax; break
-            case 'after tax price label': getElement = this.inputAfterTaxLabel; break
-            case 'calculate button': getElement = this.buttonCalculate; break
-            case 'clear button': getElement = this.buttonClear; break
-            case 'result heading': getElement = this.resultHeading; break
-            default: getElement = undefined
-        }
-        return getElement
+
+    // Use properties from the Design Requirements to validate in UI Test
+    requiredCount = GUI['Design Requirements'].semantics.elementLimits.h1
+    requiredLineProperties = [
+        GUI['Design Requirements'].visuals.lines['primary line width'],
+        GUI['Design Requirements'].visuals.lines['primary line style']
+    ]
+    requiredSymbols = [
+        GUI['Design Requirements'].visuals.symbols.percentage,
+        GUI['Design Requirements'].visuals.symbols.localizations['USA'].dollar,
+        GUI['Design Requirements'].visuals.symbols.start_play_go_execute
+    ]
+    requiredColors = [
+        GUI['Design Requirements'].visuals.approvedColors.accentText['Silian Grail'],
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Bone'],
+        GUI['Design Requirements'].visuals.approvedColors.borders['Eggshell'],
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Go Money Green'],
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Luxurious Granite'],
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Mistake Grey'],
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Results Green']
+    ]
+    requiredColorsFunctional = {
+        warning: GUI['Design Requirements'].visuals.approvedColors.functional.warning,
+        success: GUI['Design Requirements'].visuals.approvedColors.functional.success,
+        important: GUI['Design Requirements'].visuals.approvedColors.functional.important
     }
+    requiredText = {
+        title: GUI['Design Requirements'].language.approvedApps.appID34534535.title,
+        description: GUI['Design Requirements'].language.approvedApps.appID34534535.description,
+        inputLabels: GUI['Design Requirements'].language.approvedApps.appID34534535.inputLabels,
+        outputLabels: GUI['Design Requirements'].language.approvedApps.appID34534535.outputLabels
+    }
+
+    // Define getters to return selectors
     get inputPanel () { return $('//div[@class="panel"]') }
     get inputPanelTable () { return $('//div[@class="panel"]/table') }
     get componentHeading () { return $('//h1') }
@@ -42,89 +52,48 @@ class SalesTax extends BasePage {
     get inputAfterTaxLabel () { return $('//input[@type="text"][@name="finalprice"][@id="finalprice"]/../../td[@align="right"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
+    get buttonSave () { return $('//img[@src="//d26tpo4cm8sb6k.cloudfront.net/img/save.svg"]') }
     get resultHeading () { return $('//h2[@class="h2result"]') }
     get result () { return $('(//*[@class="verybigtext"])[3]//font//b') }
+    get resultLine1 () { return $('(//*[@class="verybigtext"])[1]//font') }
+    get resultLine2 () { return $('(//*[@class="verybigtext"])[2]//font') }
+    get resultLine3 () { return $('(//*[@class="verybigtext"])[3]//font') }
     get resultsArray () { return $$('//div/div[@class="verybigtext"]') }
     get errorMessage () { return $('//font[@color="red"]') }
     get errorNotValidBeforeTax () { return $('//font[@color="red"][contains(text(),"Please provide a valid before tax price.")]') }
     get errorLessThan2ValuesProvided () { return $('//font[@color="red"][contains(text(),"Please provide at least two values to calculate.")]') }
-    get errorAfterTaxCanNotBeSmallerThanBeforeTax () { return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]') }    
+    get errorAfterTaxCanNotBeSmallerThanBeforeTax () { return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]') }
 
-    async checkElementExists ({element}) {
-        await expect(this.locate(element)).toBeExisting()
-    }
-
-    // async checkElementIsChildOfParent ({child,parent}) {
-    //    const p = await this.locate(parent)
-    //    const c = await this.locate(child)
-    //    const found = await p.c
-    //    await expect(found).toBeExisting()
-    // }
-
-    async checkElementCount ({element, count}) {
-        const elementArray = await this.locate(element)
-        await expect(elementArray.length).toBe(count)
-    }
-
-    async checkElementAttribute ({element, attribute, value}) {
-        const e = await this.locate(element)
-        const attributeValue = await e.getAttribute(attribute)
-        await expect(attributeValue).toBe(value)
-    }
-
-    async checkElementText ({element, text}) {
-        await expect(this.locate(element)).toHaveText(text)
-    }
-
-    async checkElementColor ({element, color}) {
-        const elementColor = await this.locate(element).getCSSProperty('color')
-        await expect(elementColor.parsed.hex).toBe(color)
-    }
-
-    async checkElementBackgroundColor ({element, color}) {
-        const elementBGcolor = await this.locate(element).getCSSProperty('background-color')
-        await expect(elementBGcolor.parsed.hex).toBe(color)
-    }
-
-    async checkElementBackgroundImage ({element, image, position}) {
-        const e = this.locate(element)
-        const imageURL = await e.getCSSProperty('background-image')
-        const imagePosition = await e.getCSSProperty('background-position')
-        await expect(imageURL.value).toBe(image)
-        await expect(imagePosition.value).toBe(position)
-    }
-
-    async checkElementBorder ({element, edgesToCheck, width, style, color}) {
-        const e = await this.locate(element)
-        edgesToCheck.forEach(async (edge) => {
-            const edgeWidth = await e.getCSSProperty(`border-${edge}-width`)
-            const edgeStyle = await e.getCSSProperty(`border-${edge}-style`)
-            const edgeColor = await e.getCSSProperty(`border-${edge}-color`)
-            await expect(edgeWidth.parsed.string).toBe(width)
-            await expect(edgeStyle.parsed.string).toBe(style)
-            await expect(edgeColor.parsed.hex).toBe(color)
-        })
-        
-    }
-
-    async checkElementAlign ({element, align}) {
-        const elementAlign = await this.locate(element).getAttribute('align')
-        await expect(elementAlign).toBe(align)
+    // Abstration layer to map nice string names to getters
+    locate (name) {
+        let getElement = undefined
+        switch(name) {
+            case 'heading': getElement = this.componentHeading; break
+            case 'heading as list': getElement = this.arrayOfComponentHeading; break
+            case 'description': getElement = this.componentDescriptionParagraph; break
+            case 'input container': getElement = this.inputPanel; break
+            case 'input container children': getElement = this.inputPanelTable; break
+            case 'before tax price input': getElement = this.inputBeforeTax; break
+            case 'before tax price label': getElement = this.inputBeforeTaxLabel; break
+            case 'sales tax rate input': getElement = this.inputTaxRate; break
+            case 'sales tax rate label': getElement = this.inputTaxRateLabel; break
+            case 'after tax price input': getElement = this.inputAfterTax; break
+            case 'after tax price label': getElement = this.inputAfterTaxLabel; break
+            case 'calculate button': getElement = this.buttonCalculate; break
+            case 'clear button': getElement = this.buttonClear; break
+            case 'save icon': getElement = this.buttonSave; break
+            case 'result heading': getElement = this.resultHeading; break
+            case 'results as list': getElement = this.resultsArray; break
+            case 'result line 1 value': getElement = this.resultLine1; break
+            case 'result line 2 value': getElement = this.resultLine2; break
+            case 'result line 3 value': getElement = this.resultLine3; break
+            case 'error message': getElement = this.errorMessage; break
+            default: getElement = undefined
+        }
+        return getElement
     }
     
-    async hoverOverElement ({element}) {
-        const e = await this.locate(element)
-        await e.moveTo({ xOffset: -10, yOffset: 2})
-        await e.moveTo({ xOffset: 10, yOffset: -2})
-        await e.moveTo()
-    }
-
-    async checkElementHoverBackgroundColor ({element, before, after}) {
-        await this.checkElementBackgroundColor({element: element, color: before})
-        await this.hoverOverElement({element: element})
-        await this.checkElementBackgroundColor({element: element, color: after})
-    }
-
+    // Component Specific Methods
     async calculate ({beforeTax,taxRate,afterTax}) {
         // Check the input params. If it has a value: Input the value, add to count. Does not have a value: Input an empty string, don't count.
         let valueCount = 0
@@ -160,7 +129,6 @@ class SalesTax extends BasePage {
             
         }
     }
-    openComponentPage () { return super.open(this.endpoint) }
 }
 
 export default new SalesTax()
