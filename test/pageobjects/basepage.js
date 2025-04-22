@@ -89,6 +89,16 @@ export default class BasePage {
         await expect(elementAlign).toBe(align)
     }
     
+    async checkElementAIsBeforeElementB(elementA, elementB) {
+        const position = await browser.execute(
+            (a, b) => {
+                const getIndex = el => Array.from(document.body.querySelectorAll('*')).indexOf(el)
+                return { aIndex: getIndex(a), bIndex: getIndex(b) }
+            }, await elementA, await elementB
+        )
+        expect(position.aIndex).toBeLessThan(position.bIndex)
+    }
+    
     async hoverOverElement ({element}) {
         const e = element
         await e.moveTo({ xOffset: -10, yOffset: 2})
