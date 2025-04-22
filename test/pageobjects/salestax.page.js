@@ -5,39 +5,13 @@ import GUI from '../requirements/GUI.js'
 class SalesTax extends BasePage {
     openComponentPage () { return super.open(this.endpoint) }
     endpoint = 'sales-tax-calculator.html'
-
-    // Use properties from the Design Requirements to validate in UI Test
-    requiredCount = GUI['Design Requirements'].semantics.elementLimits.h1
-    requiredLineProperties = [
-        GUI['Design Requirements'].visuals.lines['primary line width'],
-        GUI['Design Requirements'].visuals.lines['primary line style']
-    ]
-    requiredSymbols = [
-        GUI['Design Requirements'].visuals.symbols.percentage,
-        GUI['Design Requirements'].visuals.symbols.localizations['USA'].dollar,
-        GUI['Design Requirements'].visuals.symbols.start_play_go_execute
-    ]
-    requiredColors = [
-        GUI['Design Requirements'].visuals.approvedColors.accentText['Silian Grail'],
-        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Bone'],
-        GUI['Design Requirements'].visuals.approvedColors.borders['Eggshell'],
-        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Go Money Green'],
-        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Luxurious Granite'],
-        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Mistake Grey'],
-        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Results Green']
-    ]
-    requiredColorsFunctional = {
-        warning: GUI['Design Requirements'].visuals.approvedColors.functional.warning,
-        success: GUI['Design Requirements'].visuals.approvedColors.functional.success,
-        important: GUI['Design Requirements'].visuals.approvedColors.functional.important
-    }
+    // Approved Text Content from Design Requirements
     requiredText = {
         title: GUI['Design Requirements'].language.approvedApps.appID34534535.title,
         description: GUI['Design Requirements'].language.approvedApps.appID34534535.description,
         inputLabels: GUI['Design Requirements'].language.approvedApps.appID34534535.inputLabels,
         outputLabels: GUI['Design Requirements'].language.approvedApps.appID34534535.outputLabels
     }
-
     // Define getters to return selectors
     get inputPanel () { return $('//div[@class="panel"]') }
     get inputPanelTable () { return $('//div[@class="panel"]/table') }
