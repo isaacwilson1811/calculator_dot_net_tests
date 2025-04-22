@@ -1,2 +1,0 @@
-make specs
-test.salestax.ui.js
