@@ -24,28 +24,59 @@ describe ( 'Heading element used for the component title', () => {
     it ( 'Should have text matching component title', async () => {
         await Salary.checkElementText (
             { 
-                text: 'Salary Calculator',
+                text: Salary.requiredText.title,
                 element: await Salary.locate ('heading')
             }
         )
     })
 
-    // 
-    // and appropriate text color applied.
-
+    it ( 'Should have appropriate text color applied', async () => {
+        await Salary.checkElementColor (
+            { 
+                color: Salary.requiredColors[0],
+                element: await Salary.locate ('heading')
+            }
+        )
+    })
 })
 
+// 2.
+describe ( 'Text element used for the component description.', () => {
 
-// Text element used for the component description.
+    it ( 'Should match the description text', async () => {
+        await Salary.checkElementText (
+            {
+                text: Salary.requiredText.description,
+                element: await Salary.locate ('description')
+            }
+        )
+    })
+})
 
-// Usage instructions heading image.
+// 3.
+describe ( 'Usage instructions heading image.', () => {
 
+    it ( 'Should be visible above input container and result section', async () => {
+        const image = await Salary.locate ('instructions image') 
+        await Salary.checkElementExists (
+            { element: image }
+        )
+        await Salary.checkElementAIsBeforeElementB ( image, $('//div[@class="leftinput"]') )
+        await Salary.checkElementAIsBeforeElementB ( image, $('//div[@class="rightresult"]') )
+    })
+})
+
+// 4.
 // Container holding value inputs and function buttons.
 
+// 5.
 // Result section and data table
 
+// 6.
 // Additional information text element
 
+// 7.
 // Enter a valid set of inputs and click Calculate to populate results table.
 
+// 8.
 // Enter an invalid set of inputs and click Calculate to produce an error message.
