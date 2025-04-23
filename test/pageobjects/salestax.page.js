@@ -107,36 +107,48 @@ class SalesTax extends BasePage {
     // test.salestax.ui.js
     // 1. Heading element used for the component's title.
     async 'Heading element is the only h1 on the page' () {
-        await this.assertArrayLength(
-            await this.locate('list of h1 headings'),
-            { expectedLength: 1 }
-        )
+        await this.assertArrayLength( await this.locate('list of h1 headings'), {
+            expectedLength: 1 
+        })
     }
     async 'Heading text content matches requirement' () {
-        await this.assertText(
-            await this.locate('h1 heading'),
-            { expectedText: this.requiredText.title }
-        )
+        await this.assertText( await this.locate('h1 heading'), {
+            expectedText: this.requiredText.title
+        })
     }
     async 'Heading text color matches requirement' () {
-        await this.assertColor(
-            await this.locate('h1 heading'),
-            { type: 'text', colorFormat: 'hex', expectedColor: this.requiredColors[0] }
-        )
+        await this.assertColor( await this.locate('h1 heading'), {
+            type: 'text',
+            colorFormat: 'hex',
+            expectedColor: this.requiredColors[0]
+        })
     }
     // 2. Text element used for the component description.
-    async 'Description text matches requirement' () {
-        await this.assertText (
-            await this.locate('description'),
-            { expectedText: this.requiredText.description }
-        )
+    async 'Description element text matches requirement' () {
+        await this.assertText ( await this.locate('description'), {
+            expectedText: this.requiredText.description
+        })
     }
     // 3. Container element holding value inputs and function buttons.
     async 'Container has required background color' () {
-        await this.assertColor (
-            await this.locate('input container'),
-            { type: 'background', colorFormat: 'hex', expectedColor: this.requiredColors[1] }
-        )
+        await this.assertColor ( await this.locate('input container'), {
+            type: 'background',
+            colorFormat: 'hex',
+            expectedColor: this.requiredColors[1]
+        })
+    }
+    async 'Container has required CSS border' () {
+        await this.assertCSSBorder ( await this.locate('input container'), {
+            expectedColor: this.requiredColors[2],
+            expectedWidth: this.requiredLineProperties[0],
+            expectedStyle: this.requiredLineProperties[1],
+        })
+    }
+    async 'Container is centered horizontally' () {
+        await this.assertAttributeValue ( await this.locate('input container table'), {
+            attribute: 'align',
+            expectedValue: 'center'
+        })
     }
 
 }

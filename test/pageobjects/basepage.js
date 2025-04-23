@@ -72,7 +72,7 @@ export default class BasePage {
         await expect(imagePosition.value).toBe(expectedPosition)
     }
 
-    async assertCSSBorder ({element, expectedColor, expectedWidth, expectedStyle}) {
+    async assertCSSBorder (element, {expectedColor, expectedWidth, expectedStyle}) {
         const edges = ['top','left','bottom','right']
         edges.forEach( async (edge) => {
             const edgeWidth = await element.getCSSProperty(`border-${edge}-width`)
