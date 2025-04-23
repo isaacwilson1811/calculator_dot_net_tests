@@ -21,7 +21,7 @@ class CompoundInterest extends BasePage {
     }
 
     navigateToPage () {
-        return super.open('compound-interest-calculator.html')
+        return super.navigate('compound-interest-calculator.html')
     }
 }
 

@@ -2,8 +2,9 @@ import { browser, expect } from '@wdio/globals'
 import GUI from '../requirements/GUI.js'
 
 export default class BasePage {
-    // Use properties from the Design Requirements to validate UI Tests
-    requiredCount = GUI['Design Requirements'].semantics.elementLimits.h1
+    
+    // Required values that are shared accross all page objects.
+    requiredH1Limit = GUI['Design Requirements'].semantics.elementLimits.h1
     requiredLineProperties = [
         GUI['Design Requirements'].visuals.lines['primary line width'],
         GUI['Design Requirements'].visuals.lines['primary line style']
@@ -28,87 +29,92 @@ export default class BasePage {
         important: GUI['Design Requirements'].visuals.approvedColors.functional.important
     }
     
-    open (path) {
+    navigate (path) {
         return browser.url(`https://calculator.net/${path}`)
     }
 
-    async checkElementExists ({element}) {
+    // Assertion Methods
+
+    async assertExists (element) {
         await expect(element).toBeExisting()
     }
     
-    async checkElementCount ({element, count}) {
-        const elementArray = element
-        await expect(elementArray.length).toBe(count)
+    async assertArrayLength (array, {expectedLength}) {
+        await expect(array.length).toBe(expectedLength)
     }
 
-    async checkElementAttribute ({element, attribute, value}) {
+    async assertAttributeValue (element, {attribute, expectedValue}) {
         const attributeValue = await element.getAttribute(attribute)
-        await expect(attributeValue).toBe(value)
+        await expect(attributeValue).toBe(expectedValue)
     }
 
-    async checkElementText ({element, text}) {
-        await expect(element).toHaveText(text)
+    async assertText (element, {expectedText}) {
+        await expect(element).toHaveText(expectedText)
     }
     
-    async checkElementColor ({element, color}) {
-        const elementColor = await element.getCSSProperty('color')
-        await expect(elementColor.parsed.hex).toBe(color)
-    }
-
-    async checkElementBackgroundColor ({element, color}) {
-        const elementBGcolor = await element.getCSSProperty('background-color')
-        await expect(elementBGcolor.parsed.hex).toBe(color)
+    async assertColor (element, {type, colorFormat, expectedColor}) {
+        let property
+        switch(type){
+            case 'text': property = 'color'; break
+            case 'background': property = 'background-color'; break
+            default: property = 'color'
+        }
+        const color = await element.getCSSProperty(property)
+        if (colorFormat == 'hex') {
+            await expect(color.parsed.hex).toBe(expectedColor)
+        } else { await expect(false).toBeTrue }
     }
     
-    async checkElementBackgroundImage ({element, image, position}) {
+    async assertBackgroundImage (element, {expectedImageURL, expectedPosition}) {
         const imageURL = await element.getCSSProperty('background-image')
         const imagePosition = await element.getCSSProperty('background-position')
-        await expect(imageURL.value).toBe(image)
-        await expect(imagePosition.value).toBe(position)
+        await expect(imageURL.value).toBe(expectedImageURL)
+        await expect(imagePosition.value).toBe(expectedPosition)
     }
 
-    async checkElementBorder ({element, edgesToCheck, width, style, color}) {
-        edgesToCheck.forEach( async (edge) => {
+    async assertCSSBorder ({element, expectedColor, expectedWidth, expectedStyle}) {
+        const edges = ['top','left','bottom','right']
+        edges.forEach( async (edge) => {
             const edgeWidth = await element.getCSSProperty(`border-${edge}-width`)
             const edgeStyle = await element.getCSSProperty(`border-${edge}-style`)
             const edgeColor = await element.getCSSProperty(`border-${edge}-color`)
-            await expect(edgeWidth.parsed.string).toBe(width)
-            await expect(edgeStyle.parsed.string).toBe(style)
-            await expect(edgeColor.parsed.hex).toBe(color)
+            await expect(edgeWidth.parsed.string).toBe(expectedWidth)
+            await expect(edgeStyle.parsed.string).toBe(expectedStyle)
+            await expect(edgeColor.parsed.hex).toBe(expectedColor)
         })
         
     }
     
-    async checkElementCSSProperty ({element, property, value}) {
-        const p = await element.getCSSProperty(property)
-        await expect(p.parsed.string).toBe(value)
+    async assertCSSPropertyValue ({element, property, expectedValue}) {
+        const elementCSSProperty = await element.getCSSProperty(property)
+        await expect(elementCSSProperty.parsed.string).toBe(expectedValue)
     }
 
-    async checkElementAlign ({element, align}) {
-        const elementAlign = await element.getAttribute('align')
-        await expect(elementAlign).toBe(align)
+    // async checkElementAlign ({element, align}) {
+    //     const elementAlign = await element.getAttribute('align')
+    //     await expect(elementAlign).toBe(align)
+    // }
+    
+    async assertOrderInDOM({elementFirst, elementSecond}) {
+        const position = await browser.execute( (a, b) => {
+            const getIndex = element => Array.from(document.body.querySelectorAll('*')).indexOf(element)
+            return {
+                    indexA: getIndex(a),
+                    indexB: getIndex(b) 
+            }
+        }, await elementFirst, await elementSecond )
+        expect(position.indexA).toBeLessThan(position.indexB)
     }
     
-    async checkElementAIsBeforeElementB(elementA, elementB) {
-        const position = await browser.execute(
-            (a, b) => {
-                const getIndex = el => Array.from(document.body.querySelectorAll('*')).indexOf(el)
-                return { aIndex: getIndex(a), bIndex: getIndex(b) }
-            }, await elementA, await elementB
-        )
-        expect(position.aIndex).toBeLessThan(position.bIndex)
-    }
-    
-    async hoverOverElement ({element}) {
-        const e = element
-        await e.moveTo({ xOffset: -10, yOffset: 2})
-        await e.moveTo({ xOffset: 10, yOffset: -2})
-        await e.moveTo()
+    async assertHoverBackgroundColor ({element, expectedBGColor, expectedBGColorOnHover}) {
+        await this.assertBackgroundColor({element: element, expectedColor: expectedBGColor})
+        await this.wiggleMouseOver(element)
+        await this.assertBackgroundColor({element: element, expectedColor: expectedBGColorOnHover})
     }
 
-    async checkElementHoverStates ({element, before, after}) {
-        await this.checkElementBackgroundColor({element: element, color: before})
-        await this.hoverOverElement({element: element})
-        await this.checkElementBackgroundColor({element: element, color: after})
+    async wiggleMouseOver (element) {
+        await element.moveTo({ xOffset: -10, yOffset: 2})
+        await element.moveTo({ xOffset: 10, yOffset: -2})
+        await element.moveTo()
     }
 }

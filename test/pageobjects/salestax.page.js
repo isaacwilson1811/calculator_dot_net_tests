@@ -3,7 +3,7 @@ import BasePage from './basepage.js'
 import GUI from '../requirements/GUI.js'
 
 class SalesTax extends BasePage {
-    openComponentPage () { return super.open(this.endpoint) }
+    openComponentPage () { return super.navigate(this.endpoint) }
     endpoint = 'sales-tax-calculator.html'
     // Approved Text Content from Design Requirements
     requiredText = {
@@ -42,11 +42,11 @@ class SalesTax extends BasePage {
     locate (name) {
         let getElement = undefined
         switch(name) {
-            case 'heading': getElement = this.componentHeading; break
-            case 'heading as list': getElement = this.arrayOfComponentHeading; break
+            case 'h1 heading': getElement = this.componentHeading; break
+            case 'list of h1 headings': getElement = this.arrayOfComponentHeading; break
             case 'description': getElement = this.componentDescriptionParagraph; break
             case 'input container': getElement = this.inputPanel; break
-            case 'input container children': getElement = this.inputPanelTable; break
+            case 'input container table': getElement = this.inputPanelTable; break
             case 'before tax price input': getElement = this.inputBeforeTax; break
             case 'before tax price label': getElement = this.inputBeforeTaxLabel; break
             case 'sales tax rate input': getElement = this.inputTaxRate; break
@@ -103,6 +103,42 @@ class SalesTax extends BasePage {
             
         }
     }
+
+    // test.salestax.ui.js
+    // 1. Heading element used for the component's title.
+    async 'Heading element is the only h1 on the page' () {
+        await this.assertArrayLength(
+            await this.locate('list of h1 headings'),
+            { expectedLength: 1 }
+        )
+    }
+    async 'Heading text content matches requirement' () {
+        await this.assertText(
+            await this.locate('h1 heading'),
+            { expectedText: this.requiredText.title }
+        )
+    }
+    async 'Heading text color matches requirement' () {
+        await this.assertColor(
+            await this.locate('h1 heading'),
+            { type: 'text', colorFormat: 'hex', expectedColor: this.requiredColors[0] }
+        )
+    }
+    // 2. Text element used for the component description.
+    async 'Description text matches requirement' () {
+        await this.assertText (
+            await this.locate('description'),
+            { expectedText: this.requiredText.description }
+        )
+    }
+    // 3. Container element holding value inputs and function buttons.
+    async 'Container has required background color' () {
+        await this.assertColor (
+            await this.locate('input container'),
+            { type: 'background', colorFormat: 'hex', expectedColor: this.requiredColors[1] }
+        )
+    }
+
 }
 
 export default new SalesTax()

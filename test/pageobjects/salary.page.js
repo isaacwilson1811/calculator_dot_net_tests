@@ -3,7 +3,7 @@ import BasePage from './basepage.js';
 import GUI from '../requirements/GUI.js'
 
 class Salary extends BasePage {
-    openComponentPage () { return super.open('salary-calculator.html') }
+    openComponentPage () { return super.navigate('salary-calculator.html') }
 
     // Use properties from the Design Requirements to validate in UI Test
     // Approved Text Content from Design Requirements

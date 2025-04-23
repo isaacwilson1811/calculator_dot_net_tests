@@ -5,51 +5,30 @@ npx wdio run wdio.conf.js --spec test/specs/test.salestax.ui.js
                                                                     */
 import SalesTax from '../pageobjects/salestax.page.js'
 
+// Pre condition
 describe ( 'Navigate to the page for the component being tested.', () => {
-    it ( 'Component page should be loaded.', async () => { await SalesTax.openComponentPage() })
+    it ( 'Component page should be loaded.', async () => {
+        await SalesTax.openComponentPage()
+    })
 })
 
 // 1.
 describe ( 'Heading element used for the component\'s title.', () => {
-
     it ( 'Should be the only instance of an h1 tag.', async () => {
-        await SalesTax.checkElementCount (
-            { 
-                count: SalesTax.requiredCount,
-                element: await SalesTax.locate ('heading as list')
-            }
-        )
+        await SalesTax[ 'Heading element is the only h1 on the page' ]()
     })
-
     it ( 'Should have text matching the component\'s title text.', async () => {
-        await SalesTax.checkElementText (
-            {
-                text: SalesTax.requiredText.title,
-                element: await SalesTax.locate ('heading')
-            }
-        )
+        await SalesTax[ 'Heading text content matches requirement' ]()
     })
-
     it ( 'Should have text color of pre-defined accent color.', async () => {
-        await SalesTax.checkElementColor (
-            {
-                color: SalesTax.requiredColors[0],
-                element: await SalesTax.locate ('heading')
-            }
-        )
+        await SalesTax[ 'Heading text color matches requirement' ]()
     })
 })
 
 // 2.
 describe ( 'Text element used for the component description.', () => {
-
     it ( 'Should have text matching component description.', async () => {
-        await SalesTax.checkElementText (
-            {
-                text: SalesTax.requiredText.description,
-                element: await SalesTax.locate ('description')
-            }
-        )
+        await SalesTax[ 'Description text matches requirement' ]()
     })
 })
 
@@ -57,54 +36,36 @@ describe ( 'Text element used for the component description.', () => {
 describe ( 'Container element holding value inputs and function buttons.', () => {
 
     it ( 'Should have the assigned background color.', async () => {
-        await SalesTax.checkElementBackgroundColor (
-            {
-                color: SalesTax.requiredColors[1],
-                element: await SalesTax.locate ('input container')
-            }
-        )
+        await SalesTax[ 'Container has required background color' ]()
     })
 
     it ( 'Should have appropriate border stylings applied.', async () => {
-        await SalesTax.checkElementBorder (
-            {
-                color: SalesTax.requiredColors[2],
-                width: SalesTax.requiredLineProperties[0],
-                style: SalesTax.requiredLineProperties[1],
-                edgesToCheck: ['top', 'bottom', 'left', 'right'],
-                element: await SalesTax.locate ('input container'),
-            }
-        )
+        await SalesTax.assertCSSBorder ({
+            expectedColor: SalesTax.requiredColors[2],
+            expectedWidth: SalesTax.requiredLineProperties[0],
+            expectedStyle: SalesTax.requiredLineProperties[1],
+            element: await SalesTax.locate('input container')
+        })
     })
 
     it ( 'Should be horizontally centered in the layout.', async () => {
-        await SalesTax.checkElementAlign (
-            {
-                align: 'center',
-                element: await SalesTax.locate ('input container children')
-                
-            }
-        )
+        const table = await SalesTax.locate('input container table')
+        await SalesTax.assertAttributeValue ({
+            expectedValue: 'center', attribute: 'align', element: table
+        })
     })
 
     it ( 'Should contain an input labeled \'Before Tax Price\' with a dollar symbol on the left side of the input area.', async () => {
-        const inputBeforeTax = await SalesTax.locate ('before tax price input'), labelBeforeTax = await SalesTax.locate ('before tax price label')
-        await SalesTax.checkElementExists (
-            { element: inputBeforeTax }
-        )
-        await SalesTax.checkElementText (
-            {
-                element: labelBeforeTax,
-                text: SalesTax.requiredText.inputLabels[0]
-            }
-        )
-        await SalesTax.checkElementBackgroundImage (
-            {
-                element: inputBeforeTax,
-                image: SalesTax.requiredSymbols[1],
-                position: '0% 50%'
-            }
-        )
+        const labelBeforeTax = await SalesTax.locate ('before tax price label')
+        await SalesTax.assertText ({
+            expectedText: SalesTax.requiredText.inputLabels[0], element: labelBeforeTax
+        })
+        const inputBeforeTax = await SalesTax.locate ('before tax price input')
+        await SalesTax.assertBackgroundImage ({
+            expectedImageURL: SalesTax.requiredSymbols[1],
+            expectedPosition: '0% 50%',
+            element: inputBeforeTax
+        })
     })
 
     it ( 'Should contain an input labeled \'Sales Tax Rate\' with a percentage symbol on the right side of the input area.', async () => {

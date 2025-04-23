@@ -21,7 +21,7 @@ class Payment extends BasePage {
     }
 
     navigateToPage () {
-        return super.open('payment-calculator.html')
+        return super.navigate('payment-calculator.html')
     }
 }
 

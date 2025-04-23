@@ -5,6 +5,7 @@ npx wdio run wdio.conf.js --spec test/specs/test.salary.ui.js
                                                                     */
 import Salary from '../pageobjects/salary.page.js'
 
+// Pre condition
 describe ( 'Navigate to the page for the component being tested.', () => {
     it ( 'Component page should be loaded.', async () => { await Salary.openComponentPage() })
 })
@@ -15,7 +16,7 @@ describe ( 'Heading element used for the component title', () => {
     it ( 'Should be the only instance of an h1 tag.', async () => {
             await Salary.checkElementCount (
                 { 
-                    count: Salary.requiredCount,
+                    count: Salary.requiredH1Count,
                     element: await Salary.locate ('heading as list')
                 }
             )
