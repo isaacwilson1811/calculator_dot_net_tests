@@ -7,33 +7,27 @@ import Confirmation from '../pageobjects/salestax.page.js'
 
 // Pre condition
 describe ( 'Navigate to the page for the component being tested.', () => {
-    it ( 'Component page load.', async () => { await Confirmation.openComponentPage() })
+    it ( 'Component page should load.', async () => { await Confirmation.openComponentPage() })
 })
 
 // 1.
 describe ( 'Heading element used for the component\'s title.', () => {
     it ( 'Should be the only instance of an h1 tag.', async () => {
-        await Confirmation [
-            'Heading element is the only h1 on the page'
-        ]()
+        await Confirmation [ 'Heading element is the only h1 on the page' ]()
     })
     it ( 'Should have text matching the component\'s title text.', async () => {
-        await Confirmation [
-            'Heading text content matches requirement'
-        ]()
+        await Confirmation [ 'Heading text content matches requirement' ]()
     })
     it ( 'Should have text color of pre-defined accent color.', async () => {
-        await Confirmation [
-            'Heading text color matches requirement'
-        ]()
+        await Confirmation [ 'Heading text color matches requirement' ]()
     })
 })
-// // 2.
-// describe ( 'Text element used for the component description.', () => {
-//     it ( 'Should have text matching component description.', async () => {
-//         await Assert[ 'Description element text matches requirement' ]()
-//     })
-// })
+// 2.
+describe ( 'Text element used for the component description.', () => {
+    it ( 'Should have text matching component description.', async () => {
+        await Confirmation[ 'Description element text matches requirement' ]()
+    })
+})
 // // 3.
 // describe ( 'Container element holding value inputs and function buttons.', () => {
 //     it ( 'Should have the assigned background color.', async () => {

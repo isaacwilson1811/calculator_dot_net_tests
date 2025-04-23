@@ -89,11 +89,6 @@ export default class BasePage {
         const elementCSSProperty = await element.getCSSProperty(property)
         await expect(elementCSSProperty.parsed.string).toBe(expectedValue)
     }
-
-    // async checkElementAlign ({element, align}) {
-    //     const elementAlign = await element.getAttribute('align')
-    //     await expect(elementAlign).toBe(align)
-    // }
     
     async assertOrderInDOM({elementFirst, elementSecond}) {
         const position = await browser.execute( (a, b) => {

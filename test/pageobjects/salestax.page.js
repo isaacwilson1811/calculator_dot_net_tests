@@ -1,4 +1,4 @@
-import { $, expect } from '@wdio/globals'
+import { $ } from '@wdio/globals'
 import BasePage from './basepage.js'
 import GUI from '../requirements/GUI.js'
 
@@ -150,6 +150,7 @@ class SalesTax extends BasePage {
             expectedValue: 'center'
         })
     }
+
 
 }
 
