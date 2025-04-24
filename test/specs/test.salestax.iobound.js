@@ -12,8 +12,13 @@ describe ( 'Navigate to the page for the component being tested.', () => {
 })
 // 1.
 describe ('Calculate minimum values: Before Tax Price ($0.01), Sales Tax Rate (0%)', () => {
-    it ('After Tax Price should equal ($0.01) ', async () => {
-        await Confirm.CALCULATE[ 'With minimum values' ]()
+    it ('Should display correctly calculated values', async () => {
+        await Confirm.CALCULATE[ 'With minumum values BT TR' ]()
+    })
+})
+describe ('Calculate minimum values: Before Tax Price ($0.01), After Tax Price ($0.02)', () => {
+    it ('Should display correctly calculated values', async () => {
+        await Confirm.CALCULATE[ 'With minumum values BT AT' ]()
     })
 })
 // describe ('_', () => {
