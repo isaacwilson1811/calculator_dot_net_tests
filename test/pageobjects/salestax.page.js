@@ -80,7 +80,10 @@ class SalesTax extends BasePage {
         'Component page is loaded': async () => { await this.openComponentPage(this.endpoint) }
     }
     CALCULATE = {
-        'Valid inputs calculated': async () => { await this.calculate ({ beforeTax: 100, taxRate: 6.5 }) }
+        'Valid inputs calculated': async () => { await this.calculate ({ beforeTax: 100, taxRate: 6.5 }) },
+        'With minumum values': async () => {
+            await this.calculate ({ beforeTax: 0.01, taxRate: 0 })
+        }
     }
     ERROR = {
         'Invalid inputs produced an error message': async () => { await this.calculate({}) }
