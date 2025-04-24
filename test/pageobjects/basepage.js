@@ -38,7 +38,7 @@ export default class BasePage {
     async assertExists (element) {
         await expect(element).toBeExisting()
     }
-    
+
     async assertArrayLength (array, {expectedLength}) {
         await expect(array.length).toBe(expectedLength)
     }
@@ -85,31 +85,28 @@ export default class BasePage {
         
     }
     
-    async assertCSSPropertyValue ({element, property, expectedValue}) {
+    async assertCSSPropertyValue (element, {property, expectedValue}) {
         const elementCSSProperty = await element.getCSSProperty(property)
         await expect(elementCSSProperty.parsed.string).toBe(expectedValue)
     }
     
     async assertOrderInDOM({elementFirst, elementSecond}) {
-        const position = await browser.execute( (a, b) => {
-            const getIndex = element => Array.from(document.body.querySelectorAll('*')).indexOf(element)
-            return {
-                    indexA: getIndex(a),
-                    indexB: getIndex(b) 
-            }
-        }, await elementFirst, await elementSecond )
+        const position = await browser.execute (
+            (a,b) => {
+                const getIndex = (element) => Array.from(document.body.querySelectorAll('*')).indexOf(element)
+                return { indexA: getIndex(a), indexB: getIndex(b) }
+            },
+            await elementFirst,
+            await elementSecond
+        )
         expect(position.indexA).toBeLessThan(position.indexB)
     }
     
-    async assertHoverBackgroundColor ({element, expectedBGColor, expectedBGColorOnHover}) {
-        await this.assertBackgroundColor({element: element, expectedColor: expectedBGColor})
-        await this.wiggleMouseOver(element)
-        await this.assertBackgroundColor({element: element, expectedColor: expectedBGColorOnHover})
-    }
-
-    async wiggleMouseOver (element) {
+    async assertHoverEffectBGC (element, { expectedBGColor, expectedBGColorOnHover}) {
+        await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColor})
         await element.moveTo({ xOffset: -10, yOffset: 2})
         await element.moveTo({ xOffset: 10, yOffset: -2})
-        await element.moveTo()
+        await element.moveTo({ xOffset: 0, yOffset: 0})
+        await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColorOnHover})
     }
 }
