@@ -2,7 +2,8 @@ import { browser, expect } from '@wdio/globals'
 import GUI from '../requirements/GUI.js'
 
 export default class BasePage {
-    
+    baseURL = 'https://calculator.net'
+
     // Required values that are shared accross all page objects.
     requiredH1Limit = GUI['Design Requirements'].semantics.elementLimits.h1
     requiredLineProperties = [
@@ -28,13 +29,13 @@ export default class BasePage {
         success: GUI['Design Requirements'].visuals.approvedColors.functional.success,
         important: GUI['Design Requirements'].visuals.approvedColors.functional.important
     }
-    
-    navigate (path) {
-        return browser.url(`https://calculator.net/${path}`)
+
+    // Navigation
+    openComponentPage(endpoint) {
+        return browser.url(`${baseURL}/${endpoint}`)
     }
 
-    // Assertion Methods
-
+    // Assertion
     async assertExists (element) {
         await expect(element).toBeExisting()
     }
