@@ -104,54 +104,164 @@ class SalesTax extends BasePage {
         }
     }
 
-    // test.salestax.ui.js
-    // 1. Heading element used for the component's title.
-    async 'Heading element is the only h1 on the page' () {
-        await this.assertArrayLength( await this.locate('list of h1 headings'), {
-            expectedLength: 1 
-        })
-    }
-    async 'Heading text content matches requirement' () {
-        await this.assertText( await this.locate('h1 heading'), {
-            expectedText: this.requiredText.title
-        })
-    }
-    async 'Heading text color matches requirement' () {
-        await this.assertColor( await this.locate('h1 heading'), {
-            type: 'text',
-            colorFormat: 'hex',
-            expectedColor: this.requiredColors[0]
-        })
-    }
-    // 2. Text element used for the component description.
-    async 'Description element text matches requirement' () {
-        await this.assertText ( await this.locate('description'), {
-            expectedText: this.requiredText.description
-        })
-    }
-    // 3. Container element holding value inputs and function buttons.
-    async 'Container has required background color' () {
-        await this.assertColor ( await this.locate('input container'), {
-            type: 'background',
-            colorFormat: 'hex',
-            expectedColor: this.requiredColors[1]
-        })
-    }
-    async 'Container has required CSS border' () {
-        await this.assertCSSBorder ( await this.locate('input container'), {
-            expectedColor: this.requiredColors[2],
-            expectedWidth: this.requiredLineProperties[0],
-            expectedStyle: this.requiredLineProperties[1],
-        })
-    }
-    async 'Container is centered horizontally' () {
-        await this.assertAttributeValue ( await this.locate('input container table'), {
-            attribute: 'align',
-            expectedValue: 'center'
-        })
-    }
 
-
+                                            /*
+String named methods to be called from Specs.
+                                            */
+    BROWSER = {
+        'Component page is loaded': async () => {
+            await this.openComponentPage()
+        }
+    }
+    CALCULATE = {
+        'Valid inputs calculated': async () => {
+            await this.calculate ({ beforeTax: 100, taxRate: 6.5 })
+        }
+    }
+    ERROR = {
+        'Invalid inputs produced an error message': async () => {
+            await this.calculate({})
+        }
+    }
+    UI = {
+        // 1. Heading element used for the component's title.
+        'Heading element is the only h1 on the page': async () => {
+            await this.assertArrayLength( await this.locate('list of h1 headings'), { 
+                expectedLength: 1 
+            })
+        },
+        'Heading text content matches requirement': async () => {
+            await this.assertText( await this.locate('h1 heading'), { 
+                expectedText: this.requiredText.title 
+            })
+        },
+        'Heading text color matches requirement': async () => {
+            await this.assertColor( await this.locate('h1 heading'), {
+                type: 'text', colorFormat: 'hex',
+                expectedColor: this.requiredColors[0]
+            })
+        },
+        // 2. Text element used for the component description.
+        'Description element text matches requirement': async () => {
+            await this.assertText ( await this.locate('description'), { 
+                expectedText: this.requiredText.description 
+            })
+        },
+        // 3. Container element holding value inputs and function buttons.
+        'Container has required background color': async () => {
+            await this.assertColor ( await this.locate('input container'), {
+                type: 'background', colorFormat: 'hex',
+                expectedColor: this.requiredColors[1]
+            })
+        },
+        'Container has required CSS border': async () => {
+            await this.assertCSSBorder ( await this.locate('input container'), {
+                expectedColor: this.requiredColors[2],
+                expectedWidth: this.requiredLineProperties[0],
+                expectedStyle: this.requiredLineProperties[1],
+            })
+        },
+        'Container is centered horizontally': async () => {
+            await this.assertAttributeValue ( await this.locate('input container table'), {
+                attribute: 'align', expectedValue: 'center'
+            })
+        },
+        'Before Tax Price input and label meet requirements': async () => {
+            await this.assertText ( await this.locate ('before tax price label'), {
+                expectedText: this.requiredText.inputLabels[0]
+            })
+            await this.assertBackgroundImage ( await this.locate ('before tax price input'), {
+                expectedImageURL: this.requiredSymbols[1],
+                expectedPosition: '0% 50%'
+            })
+        },
+        'Sales Tax Rate input and label meet requirements': async () => {
+            await this.assertText ( this.locate ('sales tax rate label'), {
+                expectedText: this.requiredText.inputLabels[1]
+            })
+            await this.assertBackgroundImage ( this.locate ('sales tax rate input'), { 
+                expectedImageURL: this.requiredSymbols[0],
+                expectedPosition: '100% 50%'
+            })
+        },
+        'After Tax Price input and label meet requirements': async () => {
+            await this.assertText ( this.locate ('after tax price label'), {
+                expectedText: this.requiredText.inputLabels[2]
+            })
+            await this.assertBackgroundImage ( this.locate ('after tax price input'), {
+                expectedImageURL: this.requiredSymbols[1],
+                expectedPosition: '0% 50%'
+            })
+        },
+        'Calculate button meets requirements': async () => {
+            const button = await this.locate ('calculate button')
+            await this.assertAttributeValue ( button, {
+                attribute: 'value',
+                expectedValue: this.requiredText.inputLabels[3]
+            })
+            await this.assertHoverEffectBGC ( button, {
+                expectedBGColor: this.requiredColors[3],
+                expectedBGColorOnHover: this.requiredColors[4]
+            })
+            await this.assertBackgroundImage ( button, {
+                expectedImageURL: this.requiredSymbols[2],
+                expectedPosition: '0%'
+            })
+        },
+        'Clear button meets requirments': async () => {
+            const button = await this.locate ('clear button')
+            await this.assertAttributeValue ( button, {
+                attribute: 'value',
+                expectedValue: this.requiredText.inputLabels[4]
+            })
+            await this.assertHoverEffectBGC ( button, {
+                expectedBGColor: this.requiredColors[5],
+                expectedBGColorOnHover: this.requiredColors[4]
+            })
+        },
+        // 4. Enter a valid set of inputs and click Calculate to produce result section
+        'Result Heading meets requirements': async () => {
+            const heading = await this.locate ('result heading')
+            await this.assertText ( heading, {
+                expectedText: this.requiredText.outputLabels[0]
+            })
+            await this.assertColor ( heading, {
+                type: 'text', colorFormat: 'hex',
+                expectedColor: this.requiredColorsFunctional.important
+            })
+            await this.assertColor ( heading, {
+                type: 'background', colorFormat: 'hex',
+                expectedColor: this.requiredColors[6]
+            })
+        },
+        'Save Icon is aligned to the right': async () => {
+            await this.assertCSSPropertyValue ( await this.locate ('save icon'), {
+                property: 'float', expectedValue: 'right'
+            })
+        },
+        'Result text lines meet requirements': async () => {
+            await this.assertArrayLength ( await this.locate ('results as list'), {
+                expectedLength: 3
+            })
+            await this.assertAttributeValue ( await this.locate ('result line 2 value'), {
+                attribute: 'color',
+                expectedValue: this.requiredColorsFunctional.success
+            })
+            await this.assertAttributeValue ( await this.locate ('result line 3 value'), {
+                attribute: 'color',
+                expectedValue: this.requiredColorsFunctional.success
+            })
+        },
+        // 5. Enter an invalid set of inputs and click Calculate to produce an error message
+        'Error message is displayed and using required color': async () => {
+            const message = await this.locate('error message')
+            await this.assertExists(message)
+            await this.assertAttributeValue ( message, {
+                attribute: 'color',
+                expectedValue: this.requiredColorsFunctional.warning
+            })
+        }
+    }
 }
 
 export default new SalesTax()
