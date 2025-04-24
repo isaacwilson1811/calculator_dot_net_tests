@@ -32,7 +32,7 @@ export default class BasePage {
 
     // Navigation
     openComponentPage(endpoint) {
-        return browser.url(`${baseURL}/${endpoint}`)
+        return browser.url(`${this.baseURL}/${endpoint}`)
     }
 
     // Assertion
