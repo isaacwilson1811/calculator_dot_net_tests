@@ -39,7 +39,7 @@ class SalesTax extends BasePage {
     get errorAfterTaxCanNotBeSmallerThanBeforeTax () { return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]') }
     
     // Main component function
-    async calculate ({beforeTax,taxRate,afterTax}) {
+    async calculate ({beforeTax, taxRate, afterTax}) {
         // Check the input params. If it has a value: Input the value, add to count. Does not have a value: Input an empty string, don't count.
         let valueCount = 0
         beforeTax ? (await this.inputBeforeTax.setValue(beforeTax), valueCount++ ): await this.inputBeforeTax.setValue('');
@@ -63,33 +63,46 @@ class SalesTax extends BasePage {
         }
         // Expect the specific error message or expect the result header
         expectError ? await expect(this.errorMessage).toHaveText(expectedErrorMessage) : await expect(this.resultHeading).toBeExisting();
+    }
 
-        // WORK IN PROGRESS
-        // If we expected results: Check the results
-        if (!expectError) {
-            let results = await this.resultsArray
-            results.forEach(element => {
-                console.log(JSON.stringify(element))
+    async verifyResultsText (text) {
+        const results = await this.resultsArray
+        for (let i = 0; i < results.length; i++) {
+            await this.assertText(results[i], {
+                expectedText: text[i]
             })
         }
     }
-
 
     // Test Spec Logic
     BROWSER = {
         'Component page is loaded': async () => { await this.openComponentPage(this.endpoint) }
     }
     CALCULATE = {
-        'Valid inputs calculated': async () => { await this.calculate ({ beforeTax: 100, taxRate: 6.5 }) },
-        'With minumum values': async () => {
-            await this.calculate ({ beforeTax: 0.01, taxRate: 0 })
+        'Valid inputs calculated': async () => { 
+            await this.calculate ({ beforeTax: '100', taxRate: '6.5' }) 
+        },
+        'With minumum values BT TR': async () => {
+            await this.calculate ({ beforeTax: '0.01', taxRate: '0' })
+            await this.verifyResultsText([
+                'Before Tax Price: $0.01',
+                'Sale Tax: 0.00% or $0.00',
+                'After Tax Price: $0.01'
+            ])
+        },
+        'With minumum values BT AT': async () => {
+            await this.calculate ({ beforeTax: '0.01', afterTax: '0.02' })
+            await this.verifyResultsText([
+                'Before Tax Price: $0.01',
+                'Sale Tax: 100.00% or $0.01',
+                'After Tax Price: $0.02'
+            ])
         }
     }
     ERROR = {
         'Invalid inputs produced an error message': async () => { await this.calculate({}) }
     }
     UI = {
-        // 1. Heading element used for the component's title.
         'Heading element is the only h1 on the page': async () => {
             await this.assertArrayLength( await this.arrayOfComponentHeading, { 
                 expectedLength: 1 
@@ -106,13 +119,11 @@ class SalesTax extends BasePage {
                 expectedColor: this.requiredColors[0]
             })
         },
-        // 2. Text element used for the component description.
         'Description element text matches requirement': async () => {
             await this.assertText ( await this.componentDescriptionParagraph, { 
                 expectedText: this.requiredText.description 
             })
         },
-        // 3. Container element holding value inputs and function buttons.
         'Container has required background color': async () => {
             await this.assertColor ( await this.inputPanel, {
                 type: 'background', colorFormat: 'hex',
@@ -184,7 +195,6 @@ class SalesTax extends BasePage {
                 expectedBGColorOnHover: this.requiredColors[4]
             })
         },
-        // 4. Enter a valid set of inputs and click Calculate to produce result section
         'Result Heading meets requirements': async () => {
             const heading = await this.resultHeading
             await this.assertText ( heading, {
@@ -217,7 +227,6 @@ class SalesTax extends BasePage {
                 expectedValue: this.requiredColorsFunctional.success
             })
         },
-        // 5. Enter an invalid set of inputs and click Calculate to produce an error message
         'Error message is displayed and using required color': async () => {
             const message = await this.errorMessage
             await this.assertExists(message)
