@@ -1,7 +1,7 @@
                                                                     /*
 [calculator.net] Sales Tax Calculator | Error Message Handling
 https://mtechqa.atlassian.net/browse/MTQA-2575
-npx wdio run wdio.conf.js --spec test/specs/test.salestax.error.js
+npx wdio run wdio.conf.js --spec test/specs/salestax.error.js
                                                                     */
 import Confirm from '../pageobjects/salestax.page.js'
 // Pre condition

@@ -1,7 +1,7 @@
                                                                     /*
 [calculator.net] Sales Tax Calculator | UI Layout and Display
 https://mtechqa.atlassian.net/browse/MTQA-2503
-npx wdio run wdio.conf.js --spec test/specs/test.salestax.ui.js
+npx wdio run wdio.conf.js --spec test/specs/salestax.ui.js
                                                                     */
 import Confirm from '../pageobjects/salestax.page.js'
 // Pre condition

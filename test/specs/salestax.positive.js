@@ -1,7 +1,7 @@
                                                                     /*
 [calculator.net] Sales Tax Calculator | Expected Functional Behavior
 https://mtechqa.atlassian.net/browse/MTQA-2571
-npx wdio run wdio.conf.js --spec test/specs/test.salestax.positive.js
+npx wdio run wdio.conf.js --spec test/specs/salestax.positive.js
                                                                     */
 import Confirm from '../pageobjects/salestax.page.js'
 // Pre condition

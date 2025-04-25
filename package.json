@@ -9,6 +9,6 @@
   },
   "scripts": {
     "wdio": "wdio run ./wdio.conf.js",
-    "salestax": "npx wdio run ./wdio.conf.js --spec \"test.salestax.ui.js\" \"test.salestax.iobound.js\" \"test.salestax.error.js\" \"test.salestax.positive.js\""
+    "salestax": "npx wdio run ./wdio.conf.js --spec \"salestax.ui.js\" \"salestax.iobound.js\" \"salestax.error.js\" \"salestax.positive.js\""
   }
 }

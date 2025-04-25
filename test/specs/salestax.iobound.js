@@ -1,7 +1,7 @@
                                                                     /*
 [calculator.net] Sales Tax Calculator | Input Boundaries and Output Limits
 https://mtechqa.atlassian.net/browse/MTQA-2508
-npx wdio run wdio.conf.js --spec test/specs/test.salestax.iobound.js
+npx wdio run wdio.conf.js --spec test/specs/salestax.iobound.js
                                                                     */
 import Confirm from '../pageobjects/salestax.page.js'
 // Pre condition

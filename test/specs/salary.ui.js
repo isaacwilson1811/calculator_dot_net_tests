@@ -1,7 +1,7 @@
                                                                     /*
 [calculator.net] Salary Calculator | UI Layout and Display
 https://mtechqa.atlassian.net/browse/MTQA-2505
-npx wdio run wdio.conf.js --spec test/specs/test.salary.ui.js
+npx wdio run wdio.conf.js --spec test/specs/salary.ui.js
                                                                     */
 import Confirm from '../pageobjects/salary.page.js'
 // Pre condition
