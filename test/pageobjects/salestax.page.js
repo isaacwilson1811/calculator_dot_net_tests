@@ -65,7 +65,6 @@ class SalesTax extends BasePage {
         // Expect the specific error message or expect the result header
         expectError ? await expect(this.errorMessage).toHaveText(expectedErrorMessage) : await expect(this.resultHeading).toBeExisting();
     }
-
     async verifyResultsText (text) {
         const results = await this.resultsArray
         for (let i = 0; i < results.length; i++) {
@@ -74,7 +73,6 @@ class SalesTax extends BasePage {
             })
         }
     }
-
     async verifyErrorText (text) {
         const messages = await this.errorMessages
         for (let i = 0; i < messages.length; i++) {
@@ -82,6 +80,11 @@ class SalesTax extends BasePage {
                 expectedText: text[i]
             })
         }
+    }
+    async verifyInputsClear () {
+        // await this.assertText(await this.inputBeforeTax,{expectedText: ''})
+        // await this.assertText(await this.inputTaxRate,{expectedText: ''})
+        // await this.assertText(await this.inputAfter,{expectedText: ''})
     }
 
     // Test Spec Logic
@@ -91,9 +94,6 @@ class SalesTax extends BasePage {
         }
     }
     CALCULATE = {
-        'Valid inputs calculated': async () => { 
-            await this.calculate ({ beforeTax: '100', taxRate: '6.5' }) 
-        },
         'With minumum values BT TR': async () => {
             await this.calculate ({ beforeTax: '0.01', taxRate: '0' })
             await this.verifyResultsText([
@@ -150,6 +150,33 @@ class SalesTax extends BasePage {
                 'Sale Tax: 12.63% or $224,083,240,843,507,138,560.00',
                 'After Tax Price: $1,999,000,000,000,000,000,000.00'
             ])
+        },
+        'Valid inputs calculated': async () => { 
+            await this.calculate ({ beforeTax: '100', taxRate: '6.5' }) 
+        },
+        'BT (4.99), TR (6.1), AT (_)': async () => { 
+            await this.calculate({ beforeTax: '4.99', taxRate: '6.1' })
+            await this.verifyResultsText([
+                'Before Tax Price: $4.99',
+                'Sale Tax: 6.10% or $0.30',
+                'After Tax Price: $5.29'
+            ])
+        },
+        'BT (49.99), TR (_), AT (56.01)': async () => { 
+            await this.calculate({ beforeTax: '49.99', afterTax: '56.01' })
+            await this.verifyResultsText([
+                'Before Tax Price: $49.99',
+                'Sale Tax: 12.04% or $6.02',
+                'After Tax Price: $56.01'
+            ])
+        },
+        'BT (_), TR (8.5), AT (215.90)': async () => { 
+            await this.calculate({ taxRate:'8.5', afterTax: '215.90' })
+            await this.verifyResultsText([
+                'Before Tax Price: $198.99',
+                'Sale Tax: 8.50% or $16.91',
+                'After Tax Price: $215.90'
+            ])
         }
     }
     ERROR = {
@@ -194,6 +221,14 @@ class SalesTax extends BasePage {
                 'Please provide a valid sales tax rate.',
                 'Please provide a valid after tax price.'
             ])
+        }
+    }
+    CLEAR = {
+        'Inputs are empty after clicking Clear button': async () => {
+            await this.calculate({beforeTax:'1',taxRate:'1',afterTax:'1'})
+            const button = await this.buttonClear
+            await button.click()
+            await this.verifyInputsClear()
         }
     }
     UI = {
