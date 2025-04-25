@@ -40,12 +40,12 @@ class Salary extends BasePage {
     UI = {
         'Heading element is the only h1 on the page': async () => {
             await this.assertArrayLength( await this.arrayOfComponentHeading, { 
-                expectedLength: 1 
+                expectedLength: 1
             })
         },
         'Heading text content matches requirement': async () => {
             await this.assertText( await this.componentHeading, { 
-                expectedText: this.requiredText.title 
+                expectedText: this.requiredText.title
             })
         },
         'Heading text color matches requirement': async () => {
@@ -56,7 +56,7 @@ class Salary extends BasePage {
         },
         'Description element text matches requirement': async () => {
             await this.assertText ( await this.componentDescriptionParagraph, { 
-                expectedText: this.requiredText.description 
+                expectedText: this.requiredText.description
             })
         },
         'Usage Instruction image meets requirements': async () => {

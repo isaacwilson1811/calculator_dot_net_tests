@@ -10,7 +10,6 @@ describe ( 'Navigate to the page for the component being tested.', () => {
         await Confirm.BROWSER[ 'Component page is loaded' ]()
     })
 })
-
 // 1.
 describe ( 'Heading element used for the component title', () => {
     it ( 'Should be the only instance of an h1 tag.', async () => {
@@ -40,7 +39,6 @@ describe ('Container holding value inputs and function buttons.', () => {
     it ('Should be displayed to the left of Result section, with required background color and border.', async () => {
         await Confirm.UI[ 'Input container meets requirements' ]()
     })
-
 })
 // * The following UI elements are present in the container:
 // * Input labeled ‘Salary amount’ with a dollar symbol on the left side of the input area.
