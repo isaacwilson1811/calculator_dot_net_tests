@@ -16,13 +16,33 @@ describe ('Calculate minimum values: Before Tax Price ($0.01), Sales Tax Rate (0
         await Confirm.CALCULATE[ 'With minumum values BT TR' ]()
     })
 })
+// 2.
 describe ('Calculate minimum values: Before Tax Price ($0.01), After Tax Price ($0.02)', () => {
     it ('Should display correctly calculated values', async () => {
         await Confirm.CALCULATE[ 'With minumum values BT AT' ]()
     })
 })
-// describe ('_', () => {
-//     it ('_', async () => {
-
-//     })
-// })
+// 3.
+describe ('Calculate minimum values: Sales Tax Rate (0%), After Tax Price ($0)', () => {
+    it ('Should display correctly calculated values', async () => {
+        await Confirm.CALCULATE[ 'With minumum values ST AT' ]()
+    })
+})
+// 4.
+describe ('Calculate maximum values: Before Tax Price ($1,999,000,000,000,000,000,000.00), Sales Tax Rate (12.625%)', () => {
+    it ('Should display correctly calculated values', async () => {
+        await Confirm.CALCULATE[ 'With maximum values BT TR' ]()
+    })
+})
+// 5.
+describe ('Calculate maximum values: Before Tax Price ($100,000,000,000,000,000,000.00), After Tax Price ($1,900,000,000,000,000,000,000.00)', () => {
+    it ('Should display correctly calculated values', async () => {
+        await Confirm.CALCULATE[ 'With maximum values BT AT' ]()
+    })
+})
+// 6.
+describe ('Calculate maximum values: Sales Tax Rate (12.625%), After Tax Price ($1,999,000,000,000,000,000,000.00)', () => {
+    it ('Should display correctly calculated values', async () => {
+        await Confirm.CALCULATE[ 'With maximum values TR AT' ]()
+    })
+})
