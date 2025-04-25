@@ -8,6 +8,7 @@
     "@wdio/spec-reporter": "^9.12.3"
   },
   "scripts": {
-    "wdio": "wdio run ./wdio.conf.js"
+    "wdio": "wdio run ./wdio.conf.js",
+    "salestax": "npx wdio run ./wdio.conf.js --spec \"test.salestax.ui.js\" \"test.salestax.iobound.js\" \"test.salestax.error.js\" \"test.salestax.positive.js\""
   }
 }
