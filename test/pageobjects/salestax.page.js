@@ -97,6 +97,47 @@ class SalesTax extends BasePage {
                 'Sale Tax: 100.00% or $0.01',
                 'After Tax Price: $0.02'
             ])
+        },
+        'With minumum values ST AT': async () => {
+            await this.calculate ({ taxRate: '0', afterTax: '0' })
+            await this.verifyResultsText([
+                'Before Tax Price: $0.00',
+                'Sale Tax: 0.00% or $0.00',
+                'After Tax Price: $0.00'
+            ])
+        },
+        'With maximum values BT TR': async () => {
+            await this.calculate ({
+                beforeTax: '1,999,000,000,000,000,000,000.00',
+                taxRate: '12.625'
+            })
+            await this.verifyResultsText([
+                'Before Tax Price: $1,999,000,000,000,000,000,000.00',
+                'Sale Tax: 12.63% or $252,373,750,000,000,008,192.00',
+                'After Tax Price: $2,251,373,749,999,999,909,888.00'
+            ])
+        },
+        'With maximum values BT AT': async () => {
+            await this.calculate ({
+                beforeTax: '100,000,000,000,000,000,000.00',
+                afterTax: '1,900,000,000,000,000,000,000.00'
+            })
+            await this.verifyResultsText([
+                'Before Tax Price: $100,000,000,000,000,000,000.00',
+                'Sale Tax: 1,800.00% or $1,800,000,000,000,000,000,000.00',
+                'After Tax Price: $1,900,000,000,000,000,000,000.00'
+            ])
+        },
+        'With maximum values TR AT': async () => {
+            await this.calculate ({
+                taxRate: '12.625',
+                afterTax: '1,999,000,000,000,000,000,000.00'
+            })
+            await this.verifyResultsText([
+                'Before Tax Price: $1,774,916,759,156,492,861,440.00',
+                'Sale Tax: 12.63% or $224,083,240,843,507,138,560.00',
+                'After Tax Price: $1,999,000,000,000,000,000,000.00'
+            ])
         }
     }
     ERROR = {
