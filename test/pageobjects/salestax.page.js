@@ -34,6 +34,7 @@ class SalesTax extends BasePage {
     get resultLine2 () { return $('(//*[@class="verybigtext"])[2]//font') }
     get resultLine3 () { return $('(//*[@class="verybigtext"])[3]//font') }
     get errorMessage () { return $('//font[@color="red"]') }
+    get errorMessages () { return $$('//font[@color="red"]') }
     get errorNotValidBeforeTax () { return $('//font[@color="red"][contains(text(),"Please provide a valid before tax price.")]') }
     get errorLessThan2ValuesProvided () { return $('//font[@color="red"][contains(text(),"Please provide at least two values to calculate.")]') }
     get errorAfterTaxCanNotBeSmallerThanBeforeTax () { return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]') }
@@ -74,9 +75,20 @@ class SalesTax extends BasePage {
         }
     }
 
+    async verifyErrorText (text) {
+        const messages = await this.errorMessages
+        for (let i = 0; i < messages.length; i++) {
+            await this.assertText(messages[i], {
+                expectedText: text[i]
+            })
+        }
+    }
+
     // Test Spec Logic
     BROWSER = {
-        'Component page is loaded': async () => { await this.openComponentPage(this.endpoint) }
+        'Component page is loaded': async () => {
+            await this.openComponentPage(this.endpoint)
+        }
     }
     CALCULATE = {
         'Valid inputs calculated': async () => { 
@@ -141,7 +153,48 @@ class SalesTax extends BasePage {
         }
     }
     ERROR = {
-        'Invalid inputs produced an error message': async () => { await this.calculate({}) }
+        'Invalid inputs produced an error message': async () => {
+            await this.calculate({})
+        },
+        'Error message when given no values': async () => {
+            await this.calculate({})
+            await this.verifyErrorText([
+                'Please provide at least two values to calculate.'
+            ])
+        },
+        'Error message when given only 1 value greater than 0': async () => {
+            await this.calculate({afterTax:'100'})
+            await this.verifyErrorText([
+                'Please provide at least two values to calculate.'
+            ])
+        },
+        'Error message when given only Before Tax Price ($0)': async () => {
+            await this.calculate({beforeTax:'0'})
+            await this.verifyErrorText([
+                'Please provide a valid before tax price.'
+            ])
+        },
+        'Error message when given Before Tax Price ($0), Sales Tax Rate (text characters not numeric)': async () => {
+            await this.calculate({beforeTax:'0',taxRate:'wrong input type'})
+            await this.verifyErrorText([
+                'Please provide a valid before tax price.',
+                'Please provide a valid sales tax rate.'
+            ])
+        },
+        'Error message when given Before Tax Price ($1), After Tax Price ($0)': async () => {
+            await this.calculate({beforeTax:'1', afterTax: '0'})
+            await this.verifyErrorText([
+                'After tax price can not be smaller than before tax price.'
+            ])
+        },
+        'Error message when given BT (-1), TR (txt), AT (-1)': async () => {
+            await this.calculate({beforeTax: '-1', taxRate: 'wrong type', afterTax: '-1'})
+            await this.verifyErrorText([
+                'Please provide a valid before tax price.',
+                'Please provide a valid sales tax rate.',
+                'Please provide a valid after tax price.'
+            ])
+        }
     }
     UI = {
         'Heading element is the only h1 on the page': async () => {
