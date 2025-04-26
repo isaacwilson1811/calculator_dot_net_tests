@@ -35,30 +35,69 @@ describe ( 'Usage instructions heading image.', () => {
     })
 })
 // 4.
-describe ('Container holding value inputs and function buttons.', () => {
-    it ('Should be displayed to the left of Result section, with required background color and border.', async () => {
+describe ( 'Input container holding the following elements and buttons.', () => {
+    it ( 'Should be displayed to the left of Result section, with required background color and border.', async () => {
         await Confirm.UI[ 'Input container meets requirements' ]()
     })
+    it ( 'Input and label with text: "Salary amount[newline] per". has a dollar symbol backgound image aligned to the left', async () => {
+
+    })
+    it ( 'Unit selection dropdown list defaulting to "Hour". Contains options: Hour, Day, Week, Bi-Week, Semi-month, Month, Quarter, Year', async () => {
+
+    })
+    it ( 'Input and label with text: "Hours per week"', async () => {
+
+    })
+    it ( 'Input and label with text: "Days per week"', async () => {
+
+    })
+    it ( 'Input and label with text: "Holidays per year"', async () => {
+
+    })
+    it ( 'Input and label with text: "Vacation days per year"', async () => {
+
+    })
+    it ( 'Calculate button with a functioning hover state, appropriate colors, and play-arrow icon.', async () => {
+
+    })
+    it ( 'Clear button with a functioning hover state and appropriate colors applied.', async () => {
+
+    })
 })
-// * The following UI elements are present in the container:
-// * Input labeled ‘Salary amount’ with a dollar symbol on the left side of the input area.
-// *Dropdown selection list labeled ‘per’ defaulting to ‘Hour’ and list contains the choices:
-//        Hour, Day, Week, Bi-Week, Semi-month, Month, Quarter, Year
-// * Input labeled Hours per week
-// * Input labeled Days per week
-// * Input labeled Holidays per year
-// * Input labeled Vacation days per year
-// * Calculate button with a functioning hover state, appropriate colors, and play-arrow icon.
-// * Clear button with a functioning hover state and appropriate colors applied.
-
 // 5.
-// Result section and data table
+describe( 'Result section and data table', () => {
+    it ( '', async () => {
 
+    })
+// Result section is displayed to the right of input container
+// * h2 heading element with text 'Result' and appropriate text / background color applied.
+// * Save Icon aligned to the right side of heading. Hover effect changes the cursor style only.
+// * Table with 3 columns, 1 heading row and 8 data rows:
+// * Table heading row displays column labels (blank), “Unadjusted”, and “Holidays & vacation days adjusted”. Accent color and background color is applied.
+// * 8 Table data rows with alternating background color and cell borders applied.
+// * The column layout of the data rows are 1st column: Labels, 2nd column: dollar amounts, 3rd column: dollar amounts.
+// * Labels in 1st column are: Hourly, Daily, Weekly, Bi-weekly, Semi-monthly, Monthly, Quarterly, Annual
+})
 // 6.
-// Additional information text element
-
+describe( 'Additional information text element', () => {
+    it ( '', async () => {
+    })
+//     Additional information Paragraph element displayed below the inputs and results taking the full content width.
+// Contains the text: “This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed…“
+// * Passes spelling checks or exactly matches pre approved text content.
+})
 // 7.
-// Enter a valid set of inputs and click Calculate to populate results table.
-
+describe( 'Enter a valid set of inputs and click Calculate to populate results table.', () => {
+    it ( '', async () => {
+    })
+//     After clicking Calculate, the description paragraph from step 2 should disappear
+// * The result data table is updated.
+})
 // 8.
-// Enter an invalid set of inputs and click Calculate to produce an error message.
+describe( 'Enter an invalid set of inputs and click Calculate to produce an error message.', () => {
+    it ( '', async () => {
+    })
+//     After clicking Calculate, the description paragraph from step 2 should disappear.
+// * A single Caution Icon and error message(s) should replace the entire result section.
+// * The error text should be highlighted in the appropriate color.
+})

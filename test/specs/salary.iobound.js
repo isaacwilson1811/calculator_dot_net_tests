@@ -10,3 +10,7 @@ describe ( 'Navigate to the page for the component being tested.', () => {
         await Confirm.BROWSER[ 'Component page is loaded' ]()
     })
 })
+// 1.
+describe ( '', () => {
+    it ( '', async () => {})
+})
