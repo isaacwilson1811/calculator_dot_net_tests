@@ -107,6 +107,7 @@ export default class BasePage {
         await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColor})
         await element.moveTo({ xOffset: -10, yOffset: 2})
         await element.moveTo({ xOffset: 10, yOffset: -2})
+        await element.moveTo({ xOffset: -4, yOffset: 4})
         await element.moveTo({ xOffset: 0, yOffset: 0})
         await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColorOnHover})
     }

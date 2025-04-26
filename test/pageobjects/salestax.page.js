@@ -82,9 +82,9 @@ class SalesTax extends BasePage {
         }
     }
     async verifyInputsClear () {
-        // await this.assertText(await this.inputBeforeTax,{expectedText: ''})
-        // await this.assertText(await this.inputTaxRate,{expectedText: ''})
-        // await this.assertText(await this.inputAfter,{expectedText: ''})
+        await this.assertText(this.inputBeforeTax,{expectedText: ''})
+        await this.assertText(this.inputTaxRate,{expectedText: ''})
+        await this.assertText(this.inputAfterTax,{expectedText: ''})
     }
 
     // Test Spec Logic
@@ -226,8 +226,7 @@ class SalesTax extends BasePage {
     CLEAR = {
         'Inputs are empty after clicking Clear button': async () => {
             await this.calculate({beforeTax:'1',taxRate:'1',afterTax:'1'})
-            const button = await this.buttonClear
-            await button.click()
+            await this.buttonClear.click()
             await this.verifyInputsClear()
         }
     }
