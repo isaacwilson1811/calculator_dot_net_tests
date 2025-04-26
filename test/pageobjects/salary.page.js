@@ -18,6 +18,7 @@ class Salary extends BasePage {
     get componentDescriptionParagraph () { return $('(//div[@id="content"]/p)[1]') }
     get arrayOfComponentHeading () { return $$('//h1') }
     get inputSalaryAmount () { return $('//input[@id="camount"]') }
+    get inputSalaryAmountLabel () { return $('//td[contains(text(),"Salary amount")]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]')}
     get annualUnadjusted () { return $('(//table[@class="cinfoT"]//td[contains(text(),"Annual")]/following-sibling::td)[1]')}
     get instructionImg () { return $('//img[@src="//d26tpo4cm8sb6k.cloudfront.net/img/svg/insm.svg"]') }
