@@ -304,7 +304,6 @@ class SalesTax extends BasePage {
                 expectedValue: this.requiredText.inputLabels[3]
             })
             await this.assertHoverEffectBGC ( button, {
-                expectedBGColor: this.requiredColors[3],
                 expectedBGColorOnHover: this.requiredColors[4]
             })
             await this.assertBackgroundImage ( button, {

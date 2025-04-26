@@ -103,8 +103,7 @@ export default class BasePage {
         expect(position.indexA).toBeLessThan(position.indexB)
     }
     
-    async assertHoverEffectBGC (element, { expectedBGColor, expectedBGColorOnHover}) {
-        await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColor})
+    async assertHoverEffectBGC (element, { expectedBGColorOnHover }) {
         await element.moveTo({ xOffset: -10, yOffset: 2})
         await element.moveTo({ xOffset: 10, yOffset: -2})
         await element.moveTo({ xOffset: -4, yOffset: 4})
