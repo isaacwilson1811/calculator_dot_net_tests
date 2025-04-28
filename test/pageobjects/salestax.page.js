@@ -43,7 +43,7 @@ class SalesTax extends BasePage {
         await this.buttonCalculate.click()
     }
     async verifyResultsText (textArray) {
-        const results = await this.resultsArray
+        const results = this.resultsArray
         for (let i = 0; i < results.length; i++) {
             await this.assertText(results[i], {
                 expectedText: textArray[i]
@@ -54,7 +54,7 @@ class SalesTax extends BasePage {
         await this.assertText(this.errorMessage, {expectedText: text})
     }
     async verifyErrorsText (textArray) {
-        const messages = await this.errorMessages
+        const messages = this.errorMessages
         for (let i = 0; i < messages.length; i++) {
             await this.assertText(messages[i], {
                 expectedText: textArray[i]
@@ -212,7 +212,7 @@ class SalesTax extends BasePage {
     }
     UI = {
         'Heading element is the only h1 on the page': async () => {
-            await this.assertArrayLength( await this.arrayOfComponentHeading, { 
+            await this.assertArrayLength( this.arrayOfComponentHeading, { 
                 expectedLength: 1 
             })
         },
@@ -322,7 +322,7 @@ class SalesTax extends BasePage {
             })
         },
         'Result text lines meet requirements': async () => {
-            await this.assertArrayLength ( await this.resultsArray, {
+            await this.assertArrayLength ( this.resultsArray, {
                 expectedLength: 3
             })
             await this.assertAttributeValue ( this.resultLine2Value, {

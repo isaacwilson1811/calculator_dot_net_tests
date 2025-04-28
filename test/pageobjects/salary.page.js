@@ -40,35 +40,35 @@ class Salary extends BasePage {
     }
     UI = {
         'Heading element is the only h1 on the page': async () => {
-            await this.assertArrayLength( await this.arrayOfComponentHeading, { 
+            await this.assertArrayLength( this.arrayOfComponentHeading, { 
                 expectedLength: 1
             })
         },
         'Heading text content matches requirement': async () => {
-            await this.assertText( await this.componentHeading, { 
+            await this.assertText( this.componentHeading, { 
                 expectedText: this.requiredText.title
             })
         },
         'Heading text color matches requirement': async () => {
-            await this.assertColor( await this.componentHeading, {
+            await this.assertColor( this.componentHeading, {
                 type: 'text', colorFormat: 'hex',
                 expectedColor: this.requiredColors[0]
             })
         },
         'Description element text matches requirement': async () => {
-            await this.assertText ( await this.componentDescriptionParagraph, { 
+            await this.assertText ( this.componentDescriptionParagraph, { 
                 expectedText: this.requiredText.description
             })
         },
         'Usage Instruction image meets requirements': async () => {
-            const image = await this.instructionImg
+            const image = this.instructionImg
             await this.assertExists(image)
-            await this.assertOrderInDOM({elementFirst: image, elementSecond: await this.leftColumn})
-            await this.assertOrderInDOM({elementFirst: image, elementSecond: await this.rightColumn})
+            await this.assertOrderInDOM({elementFirst: image, elementSecond: this.leftColumn})
+            await this.assertOrderInDOM({elementFirst: image, elementSecond: this.rightColumn})
         },
         'Input container meets requirements': async () => {
-            const container = await this.inputContainer
-            await this.assertOrderInDOM({elementFirst: container, elementSecond: await this.rightColumn})
+            const container = this.inputContainer
+            await this.assertOrderInDOM({elementFirst: container, elementSecond: this.rightColumn})
             await this.assertColor(container, {
                 type: 'background',
                 colorFormat: 'hex',
