@@ -39,8 +39,8 @@ describe ( 'Input container holding the following elements and buttons.', () => 
     it ( 'Should be displayed to the left of Result section, with required background color and border.', async () => {
         await Confirm.UI[ 'Input container meets requirements' ]()
     })
-    it ( 'Input and label with text: "Salary amount[newline] per". has a dollar symbol backgound image aligned to the left', async () => {
-
+    it ( 'Input and label with text: "Salary amount per.', async () => {
+        await Confirm.UI[ 'Salary ammount input label meet requirements' ]()
     })
     it ( 'Unit selection dropdown list defaulting to "Hour". Contains options: Hour, Day, Week, Bi-Week, Semi-month, Month, Quarter, Year', async () => {
 

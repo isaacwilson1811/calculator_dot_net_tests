@@ -1,5 +1,5 @@
 import { $ } from '@wdio/globals'
-import BasePage from './basepage.js';
+import BasePage from './basepage.js'
 import GUI from '../requirements/GUI.js'
 
 class Salary extends BasePage {
@@ -79,6 +79,9 @@ class Salary extends BasePage {
                 expectedWidth: '1px',
                 expectedStyle: 'solid'
             })
+        },
+        'Salary ammount input label meet requirements': async () => {
+            await this.assertExists(this.inputSalaryAmountLabel)
         }
     }
 
