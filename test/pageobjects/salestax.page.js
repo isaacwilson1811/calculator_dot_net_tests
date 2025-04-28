@@ -50,12 +50,15 @@ class SalesTax extends BasePage {
             })
         }
     }
-    async verifyErrorText (textArray) {
+    async verifyErrorText (text) {
+        await this.assertText(this.errorMessage, {expectedText: text})
+    }
+    async verifyErrorsText (textArray) {
         const messages = await this.errorMessages
-        let i = 0
-        for (const message of messages) {
-            await this.assertText(message,{expectedText: textArray[i]})
-            i++
+        for (let i = 0; i < messages.length; i++) {
+            await this.assertText(messages[i], {
+                expectedText: textArray[i]
+            })
         }
     }
     async verifyInputsClear () {
@@ -159,42 +162,41 @@ class SalesTax extends BasePage {
     }
     ERROR = {
         'Invalid inputs produced an error message': async () => {
+            await this.buttonClear.click()
             await this.calculate({})
         },
         'Error message when given no values': async () => {
+            await this.buttonClear.click()
             await this.calculate({})
-            await this.verifyErrorText([
-                'Please provide at least two values to calculate.'
-            ])
+            await this.verifyErrorText('Please provide at least two values to calculate.')
         },
         'Error message when given only 1 value greater than 0': async () => {
+            await this.buttonClear.click()
             await this.calculate({afterTax:'100'})
-            await this.verifyErrorText([
-                'Please provide at least two values to calculate.'
-            ])
+            await this.verifyErrorText('Please provide at least two values to calculate.')
         },
         'Error message when given only Before Tax Price ($0)': async () => {
+            await this.buttonClear.click()
             await this.calculate({beforeTax:'0'})
-            await this.verifyErrorText([
-                'Please provide a valid before tax price.'
-            ])
+            await this.verifyErrorText('Please provide a valid before tax price.')
         },
         'Error message when given Before Tax Price ($0), Sales Tax Rate (text characters not numeric)': async () => {
+            await this.buttonClear.click()
             await this.calculate({beforeTax:'0',taxRate:'wrong input type'})
-            await this.verifyErrorText([
+            await this.verifyErrorsText([
                 'Please provide a valid before tax price.',
                 'Please provide a valid sales tax rate.'
             ])
         },
         'Error message when given Before Tax Price ($1), After Tax Price ($0)': async () => {
-            await this.calculate({beforeTax:'1', afterTax: '0'})
-            await this.verifyErrorText([
-                'After tax price can not be smaller than before tax price.'
-            ])
+            await this.buttonClear.click()
+            await this.calculate({beforeTax:'1', afterTax: '0', taxRate: ''})
+            await this.verifyErrorText('After tax price can not be smaller than before tax price.')
         },
         'Error message when given BT (-1), TR (txt), AT (-1)': async () => {
+            await this.buttonClear.click()
             await this.calculate({beforeTax: '-1', taxRate: 'wrong type', afterTax: '-1'})
-            await this.verifyErrorText([
+            await this.verifyErrorsText([
                 'Please provide a valid before tax price.',
                 'Please provide a valid sales tax rate.',
                 'Please provide a valid after tax price.'
