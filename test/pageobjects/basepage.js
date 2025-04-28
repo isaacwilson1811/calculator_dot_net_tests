@@ -41,7 +41,8 @@ export default class BasePage {
     }
 
     async assertArrayLength (array, {expectedLength}) {
-        await expect(array.length).toBe(expectedLength)
+        const length = await array.length
+        await expect(length).toBe(expectedLength)
     }
 
     async assertAttributeValue (element, {attribute, expectedValue}) {
