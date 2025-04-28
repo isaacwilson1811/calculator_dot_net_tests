@@ -237,53 +237,53 @@ class SalesTax extends BasePage {
             })
         },
         'Heading text content matches requirement': async () => {
-            await this.assertText( await this.componentHeading, { 
+            await this.assertText( this.componentHeading, { 
                 expectedText: this.requiredText.title 
             })
         },
         'Heading text color matches requirement': async () => {
-            await this.assertColor( await this.componentHeading, {
+            await this.assertColor( this.componentHeading, {
                 type: 'text', colorFormat: 'hex',
                 expectedColor: this.requiredColors[0]
             })
         },
         'Description element text matches requirement': async () => {
-            await this.assertText ( await this.componentDescriptionParagraph, { 
+            await this.assertText ( this.componentDescriptionParagraph, { 
                 expectedText: this.requiredText.description 
             })
         },
         'Container has required background color': async () => {
-            await this.assertColor ( await this.inputPanel, {
+            await this.assertColor ( this.inputPanel, {
                 type: 'background', colorFormat: 'hex',
                 expectedColor: this.requiredColors[1]
             })
         },
         'Container has required CSS border': async () => {
-            await this.assertCSSBorder ( await this.inputPanel, {
+            await this.assertCSSBorder ( this.inputPanel, {
                 expectedColor: this.requiredColors[2],
                 expectedWidth: this.requiredLineProperties[0],
                 expectedStyle: this.requiredLineProperties[1],
             })
         },
         'Container is centered horizontally': async () => {
-            await this.assertAttributeValue ( await this.inputPanelTable, {
+            await this.assertAttributeValue ( this.inputPanelTable, {
                 attribute: 'align', expectedValue: 'center'
             })
         },
         'Before Tax Price input and label meet requirements': async () => {
-            await this.assertText ( await this.inputBeforeTaxLabel, {
+            await this.assertText ( this.inputBeforeTaxLabel, {
                 expectedText: this.requiredText.inputLabels[0]
             })
-            await this.assertBackgroundImage ( await this.inputBeforeTax, {
+            await this.assertBackgroundImage ( this.inputBeforeTax, {
                 expectedImageURL: this.requiredSymbols[1],
                 expectedPosition: '0% 50%'
             })
         },
         'Sales Tax Rate input and label meet requirements': async () => {
-            await this.assertText ( await this.inputTaxRateLabel, {
+            await this.assertText ( this.inputTaxRateLabel, {
                 expectedText: this.requiredText.inputLabels[1]
             })
-            await this.assertBackgroundImage ( await this.inputTaxRate, { 
+            await this.assertBackgroundImage ( this.inputTaxRate, { 
                 expectedImageURL: this.requiredSymbols[0],
                 expectedPosition: '100% 50%'
             })
@@ -298,7 +298,7 @@ class SalesTax extends BasePage {
             })
         },
         'Calculate button meets requirements': async () => {
-            const button = await this.buttonCalculate
+            const button = this.buttonCalculate
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
                 expectedValue: this.requiredText.inputLabels[3]
@@ -312,7 +312,7 @@ class SalesTax extends BasePage {
             })
         },
         'Clear button meets requirments': async () => {
-            const button = await this.buttonClear
+            const button = this.buttonClear
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
                 expectedValue: this.requiredText.inputLabels[4]
@@ -323,7 +323,7 @@ class SalesTax extends BasePage {
             })
         },
         'Result Heading meets requirements': async () => {
-            const heading = await this.resultHeading
+            const heading = this.resultHeading
             await this.assertText ( heading, {
                 expectedText: this.requiredText.outputLabels[0]
             })
@@ -337,7 +337,7 @@ class SalesTax extends BasePage {
             })
         },
         'Save Icon is aligned to the right': async () => {
-            await this.assertCSSPropertyValue ( await this.buttonSave, {
+            await this.assertCSSPropertyValue ( this.buttonSave, {
                 property: 'float', expectedValue: 'right'
             })
         },
@@ -345,17 +345,17 @@ class SalesTax extends BasePage {
             await this.assertArrayLength ( await this.resultsArray, {
                 expectedLength: 3
             })
-            await this.assertAttributeValue ( await this.resultLine2, {
+            await this.assertAttributeValue ( this.resultLine2, {
                 attribute: 'color',
                 expectedValue: this.requiredColorsFunctional.success
             })
-            await this.assertAttributeValue ( await this.resultLine3, {
+            await this.assertAttributeValue ( this.resultLine3, {
                 attribute: 'color',
                 expectedValue: this.requiredColorsFunctional.success
             })
         },
         'Error message is displayed and using required color': async () => {
-            const message = await this.errorMessage
+            const message = this.errorMessage
             await this.assertExists(message)
             await this.assertAttributeValue ( message, {
                 attribute: 'color',
