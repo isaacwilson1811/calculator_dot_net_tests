@@ -11,6 +11,17 @@ describe ( 'Navigate to the page for the component being tested.', () => {
     })
 })
 // 1.
-describe ( '', () => {
-    it ( '', async () => {})
+describe ( 'Select Fixed Term tab. Calculate with all values set to (-1)', () => {
+    it ( '', async () => {
+
+    })
+    // results in screenshot from test case
+})
+
+// 2.
+describe ( 'Select Fixed Payments tab. Calculate with all values set to (-1)', () => {
+    it ( '', async () => {
+
+    })
+    // results in screenshot from test case
 })

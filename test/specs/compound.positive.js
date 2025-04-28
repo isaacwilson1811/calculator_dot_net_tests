@@ -11,6 +11,22 @@ describe ( 'Navigate to the page for the component being tested.', () => {
     })
 })
 // 1.
-describe ( '', () => {
-    it ( '', async () => {})
+describe ( 'Calculate with values: Interest(4%), [Weekly] - [Quarterly]', () => {
+    it ( '', async () => {
+
+    })
+    // result matches screenshot in test case
+})
+// 2.
+describe ( 'Calculate with values: Interest(1.12%), [Daily] - [Semimonthly]', () => {
+    it ( '', async () => {
+        
+    })
+    // result matches screenshot in test case
+})
+// 3.
+describe ( 'Enter any values and click Clear', () => {
+    it ( 'All values are cleared and empty.', async () => {
+
+    })
 })

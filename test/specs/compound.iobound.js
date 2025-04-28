@@ -11,6 +11,16 @@ describe ( 'Navigate to the page for the component being tested.', () => {
     })
 })
 // 1.
-describe ( '', () => {
-    it ( '', async () => {})
+describe ( 'Input min value Interest (0%). Calculate all combinations of both compound selections.', () => {
+    it ( 'All results of output interest should be 0.0000000000% or 0% regardless of combination.', async () => {
+
+    })
+    // decide on how many its you will use.
+    // one per combination?
+})
+// 2.
+describe ( 'Input max value Interest (99%). Calculate all combinations of both compound selections.', () => {
+    it ( 'Results should match expected results', async () => {
+
+    })
 })
