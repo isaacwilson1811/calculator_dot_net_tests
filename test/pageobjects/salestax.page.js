@@ -5,7 +5,7 @@ import GUI from '../requirements/GUI.js'
 class SalesTax extends BasePage {
     endpoint = 'sales-tax-calculator.html'
     
-    // Required Assertion Values
+    // Required Component Text Values
     requiredText = {
         title: GUI['Design Requirements'].language.approvedApps.appID34534535.title,
         description: GUI['Design Requirements'].language.approvedApps.appID34534535.description,
@@ -30,15 +30,11 @@ class SalesTax extends BasePage {
     get buttonSave () { return $('//img[@src="//d26tpo4cm8sb6k.cloudfront.net/img/save.svg"]') }
     get resultHeading () { return $('//h2[@class="h2result"]') }
     get resultsArray () { return $$('//div/div[@class="verybigtext"]') }
-    get resultLine1 () { return $('(//*[@class="verybigtext"])[1]//font') }
-    get resultLine2 () { return $('(//*[@class="verybigtext"])[2]//font') }
-    get resultLine3 () { return $('(//*[@class="verybigtext"])[3]//font') }
+    get resultLine2Value () { return $('(//*[@class="verybigtext"])[2]//font') }
+    get resultLine3Value () { return $('(//*[@class="verybigtext"])[3]//font') }
     get errorMessage () { return $('//font[@color="red"]') }
     get errorMessages () { return $$('//font[@color="red"]') }
-    get errorNotValidBeforeTax () { return $('//font[@color="red"][contains(text(),"Please provide a valid before tax price.")]') }
-    get errorLessThan2ValuesProvided () { return $('//font[@color="red"][contains(text(),"Please provide at least two values to calculate.")]') }
-    get errorAfterTaxCanNotBeSmallerThanBeforeTax () { return $('//font[@color="red"][contains(text(),"After tax price can not be smaller than before tax price.")]') }
-    
+
     // Main component function
     async calculate ({beforeTax, taxRate, afterTax}) {
         beforeTax ? await this.inputBeforeTax.setValue(beforeTax) : await this.inputBeforeTax.setValue('')
@@ -46,26 +42,27 @@ class SalesTax extends BasePage {
         afterTax ? await this.inputAfterTax.setValue(afterTax) : await this.inputAfterTax.setValue('')
         await this.buttonCalculate.click()
     }
-    async verifyResultsText (text) {
+    async verifyResultsText (textArray) {
         const results = await this.resultsArray
         for (let i = 0; i < results.length; i++) {
             await this.assertText(results[i], {
-                expectedText: text[i]
+                expectedText: textArray[i]
             })
         }
     }
-    async verifyErrorText (text) {
+    async verifyErrorText (textArray) {
         const messages = await this.errorMessages
-        for (let i = 0; i < messages.length; i++) {
-            await this.assertText(messages[i], {
-                expectedText: text[i]
-            })
+        let i = 0
+        for (const message of messages) {
+            await this.assertText(message,{expectedText: textArray[i]})
+            i++
         }
     }
     async verifyInputsClear () {
-        await this.assertText(this.inputBeforeTax,{expectedText: ''})
-        await this.assertText(this.inputTaxRate,{expectedText: ''})
-        await this.assertText(this.inputAfterTax,{expectedText: ''})
+        const inputArray = [this.inputBeforeTax, this.inputTaxRate, this.inputAfterTax]
+        for (const input of inputArray) {
+            await this.assertText(input, {expectedText: ''})
+        }
     }
 
     // Test Spec Logic
@@ -326,11 +323,11 @@ class SalesTax extends BasePage {
             await this.assertArrayLength ( await this.resultsArray, {
                 expectedLength: 3
             })
-            await this.assertAttributeValue ( this.resultLine2, {
+            await this.assertAttributeValue ( this.resultLine2Value, {
                 attribute: 'color',
                 expectedValue: this.requiredColorsFunctional.success
             })
-            await this.assertAttributeValue ( this.resultLine3, {
+            await this.assertAttributeValue ( this.resultLine3Value, {
                 attribute: 'color',
                 expectedValue: this.requiredColorsFunctional.success
             })
