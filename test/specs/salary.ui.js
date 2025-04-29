@@ -61,7 +61,7 @@ describe ( 'Input container holding the following elements and buttons.', () => 
         await Confirm.UI[ 'Calculate button meets requirements' ]()
     })
     it ( 'Clear button with a functioning hover state and appropriate colors applied.', async () => {
-        await Confirm.UI[ 'Clear button meets requirments' ]()
+        await Confirm.UI[ 'Clear button meets requirements' ]()
     })
 })
 // 5.

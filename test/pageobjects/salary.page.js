@@ -317,7 +317,7 @@ class Salary extends BasePage {
                 expectedPosition: '0%'
             })
         },
-        'Clear button meets requirments': async () => {
+        'Clear button meets requirements': async () => {
             const button = this.buttonClear
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
