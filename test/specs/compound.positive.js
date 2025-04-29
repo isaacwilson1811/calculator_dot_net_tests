@@ -12,21 +12,19 @@ describe ( 'Navigate to the page for the component being tested.', () => {
 })
 // 1.
 describe ( 'Calculate with values: Interest(4%), [Weekly] - [Quarterly]', () => {
-    it ( '', async () => {
-
+    it ( 'Should calculate and display results correctly', async () => {
+        await Confirm.CALCULATE[ 'Positive test sample 1' ]()
     })
-    // result matches screenshot in test case
 })
 // 2.
 describe ( 'Calculate with values: Interest(1.12%), [Daily] - [Semimonthly]', () => {
-    it ( '', async () => {
-        
+    it ( 'Should calculate and display results correctly', async () => {
+        await Confirm.CALCULATE[ 'Positive test sample 2' ]()
     })
-    // result matches screenshot in test case
 })
 // 3.
 describe ( 'Enter any values and click Clear', () => {
     it ( 'All values are cleared and empty.', async () => {
-
+        await Confirm.CALCULATE[ 'Inputs empty after clicking Clear Button' ]()
     })
 })
