@@ -15,6 +15,8 @@ class Payment extends BasePage {
     get resultHeader () { return $('//h2[@class="h2result"]') }
     get resultText () { return $('(//div[@class="rightresult"]/div)[2]') }
     get resultTableRows () { return $$('(//table[@class="cinfoT"]/tbody)[1]/tr')}
+    get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
+    get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
 
     async calculate ({mode, loanTerm, monthlyPay, loanAmount, interestRate}) {
         if (mode == 'Fixed Term'){
@@ -40,14 +42,48 @@ class Payment extends BasePage {
             }
         }
     }
-    async verifyClear(){
-
+    async verifyErrors(expectedErrors) { 
+        let count = 0
+        for (const message in this.errorMessages) {
+            const text = await message.getHTML()
+            await expect(text).toBe(expectedErrors[count])
+            count++
+        }
     }
 
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
         }
+    }
+    ERROR = {
+        'Fixed Term and all -1 values produces specific errors': async () => {
+            await this.calculate({
+                mode: 'Fixed Term',
+                loanTerm: '-1',
+                loanAmount: '-1',
+                interestRate: '-1'
+            })
+            await this.verifyErrors([
+                'Please provide a positive loan amount value.',
+                'Please provide a positive interest rate value.',
+                'Please provide a positive loan term value.'
+            ])
+        },
+        'Fixed Payments and all -1 values produces specific errors': async () => {
+            await this.calculate({
+                mode: 'Fixed Payments',
+                monthlyPay: '-1',
+                loanAmount: '-1',
+                interestRate: '-1'
+            })
+            await this.verifyErrors([
+                'Please provide a positive loan amount value.',
+                'Please provide a positive interest rate value.',
+                'Please provide a positive monthly pay amount value.'
+            ])
+        }
+
     }
     CALCULATE = {
         'Positive test sample 1': async () => {
