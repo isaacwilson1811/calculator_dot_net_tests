@@ -87,24 +87,28 @@ describe( 'Result section and data table', () => {
 })
 // 6.
 describe( 'Additional information text element', () => {
-    it ( '', async () => {
+    it ( 'Element is displayed below the inputs and results, taking the full content width.', async () => {
+        await Confirm.UI[ 'Additional information text meets positional requirements' ]()
     })
-//     Additional information Paragraph element displayed below the inputs and results taking the full content width.
-// Contains the text: “This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed…“
-// * Passes spelling checks or exactly matches pre approved text content.
+    it ( 'Contains the required text', async () => {
+        await Confirm.UI[ 'Additional information text meets text content requirements' ]()
+    })
 })
 // 7.
 describe( 'Enter a valid set of inputs and click Calculate to populate results table.', () => {
-    it ( '', async () => {
+    it ( 'After clicking Calculate, the description paragraph from step 2 should disappear', async () => {
+        await Confirm.UI[ 'Calculating hides the description text' ]()
     })
-//     After clicking Calculate, the description paragraph from step 2 should disappear
-// * The result data table is updated.
+    it ( 'The result data table is updated.', async () => {
+        await Confirm.UI[ 'Calculating updates the result table text content' ]()
+    })
 })
 // 8.
 describe( 'Enter an invalid set of inputs and click Calculate to produce an error message.', () => {
-    it ( '', async () => {
+    it ( 'A single Caution Icon and error message(s) should replace the entire result section.', async () => {
+        await Confirm.UI[ 'Error container replaces results section' ]()
     })
-//     After clicking Calculate, the description paragraph from step 2 should disappear.
-// * A single Caution Icon and error message(s) should replace the entire result section.
-// * The error text should be highlighted in the appropriate color.
+    it ( 'The error text should be highlighted in the appropriate color.', async () => {
+        await Confirm.UI[ 'Error message text is highlighted in the correct color' ]()
+    })
 })
