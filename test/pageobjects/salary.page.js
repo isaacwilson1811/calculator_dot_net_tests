@@ -56,7 +56,6 @@ class Salary extends BasePage {
         await this.inputHolidaysPerYear.setValue(holidays)
         await this.inputVacationDaysPerYear.setValue(vacation)
         await this.buttonCalculate.click()
-        await browser.scroll(0, -200)
     }
     async verifyResults(col2,col3){
         for (let row = 2; row < 9; row++) {
@@ -74,6 +73,9 @@ class Salary extends BasePage {
         for (const input of inputs) {
             await this.assertText(input,{expectedText: ''})
         }
+    }
+    getRandomNumber(min,max){
+        return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
     // Test Spec Logic
@@ -111,6 +113,93 @@ class Salary extends BasePage {
                 ['$11.00','$82.50','$495','$990','$1,073','$2,145','$6,435','$25,740'],
                 ['$10.79','$80.91','$485','$971','$1,052','$2,104','$6,311','$25,245']
             )
+        },
+        'Each unit option results in all 0s when salary amount is 0': async () => {
+            for (const option of this.expectedUnitOptions) {
+                const num1 = this.getRandomNumber(1,24).toString()
+                const num2 = this.getRandomNumber(1,7).toString()
+                const num3 = this.getRandomNumber(1,40).toString()
+                const num4 = this.getRandomNumber(1,40).toString()
+                await this.calculate({
+                    salaryAmount: '0', perUnit: option.value,
+                    hours: num1, days: num2, holidays: num3, vacation: num4
+                })
+                await this.verifyResults(
+                    ['$0.00', '$0.00', '$0', '$0', '$0', '$0', '$0', '$0'],
+                    ['$0.00', '$0.00', '$0', '$0', '$0', '$0', '$0', '$0']
+                )
+            }
+        },
+        'Each unit option is calculated correctly with min values': async () => {
+            const expectedResults = [
+                ['$1.00', '$1.00', '$1', '$2', '$2', '$4', '$13', '$52'],
+                ['$1.00', '$1.00', '$1', '$2', '$2', '$4', '$13', '$52'],
+                ['$1.00', '$1.00', '$1', '$2', '$2', '$4', '$13', '$52'],
+                ['$0.50', '$0.50', '$1', '$1', '$1', '$2', '$7', '$26'],
+                ['$0.46', '$0.46', '$0', '$1', '$1', '$2', '$6', '$24'],
+                ['$0.23', '$0.23', '$0', '$0', '$1', '$1', '$3', '$12'],
+                ['$0.08', '$0.08', '$0', '$0', '$0', '$0', '$1', '$4'],
+                ['$0.02', '$0.02', '$0', '$0', '$0', '$0', '$0', '$1'],
+            ]
+            let count = 0
+            for (const option of this.expectedUnitOptions) {
+                await this.calculate({
+                    salaryAmount: '1', perUnit: option.value,
+                    hours: '1', days: '1', holidays: '0', vacation: '0'
+                })
+                await this.verifyResults(
+                    expectedResults[count],expectedResults[count]
+                )
+                count++
+            }
+        },
+        'Each unit option is calculated correctly with max values': async () => {
+            const expectedResults = [
+                {
+                    col1:['$1.00', '$22.86', '$160', '$320', '$347', '$693', '$2,080', '$8,320'],
+                    col2:['$0.00', '$0.09', '$1', '$1', '$1', '$3', '$8', '$32']
+                },
+                {
+                    col1:['$0.04', '$1.00', '$7', '$14', '$15', '$30', '$91', '$364'],
+                    col2:['$0.00', '$0.00', '$0', '$0', '$0', '$0', '$0', '$1']
+                },
+                {
+                    col1:['$1.63', '$37.14', '$260', '$520', '$563', '$1,127', '$3,380', '$13,520'],
+                    col2:['$0.01', '$0.14', '$1', '$2', '$2', '$4', '$13', '$52']
+                },
+                {
+                    col1:['$0.81', '$18.57', '$130', '$260', '$282', '$563', '$1,690', '$6,760'],
+                    col2:['$0.00', '$0.07', '$1', '$1', '$1', '$2', '$7', '$26']
+                },
+                {
+                    col1:['$0.75', '$17.14', '$120', '$240', '$260', '$520', '$1,560', '$6,240'],
+                    col2:['$0.00', '$0.07', '$0', '$1', '$1', '$2', '$6', '$24']
+                },
+                {
+                    col1:['$0.38', '$8.57', '$60', '$120', '$130', '$260', '$780', '$3,120'],
+                    col2:['$0.00', '$0.03', '$0', '$0', '$1', '$1', '$3', '$12']
+                },
+                {
+                    col1:['$0.13', '$2.86', '$20', '$40', '$43', '$87', '$260', '$1,040'],
+                    col2:['$0.00', '$0.01', '$0', '$0', '$0', '$0', '$1', '$4']
+                },
+                {
+                    col1:['$0.03', '$0.71', '$5', '$10', '$11', '$22', '$65', '$260'],
+                    col2:['$0.00', '$0.00', '$0', '$0', '$0', '$0', '$0', '$1']
+                }
+            ]
+            let count = 0
+            for (const option of this.expectedUnitOptions) {
+                await this.calculate({
+                    salaryAmount: '1', perUnit: option.value,
+                    hours: '160', days: '7', holidays: '59', vacation: '200'
+                })
+                await this.verifyResults(
+                    expectedResults[count].col1,
+                    expectedResults[count].col2
+                )
+                count++
+            }
         }
     }
     UI = {
