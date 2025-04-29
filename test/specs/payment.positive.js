@@ -11,6 +11,20 @@ describe ( 'Navigate to the page for the component being tested.', () => {
     })
 })
 // 1.
-describe ( '', () => {
-    it ( '', async () => {})
+describe ( 'Calculate with values: Fixed Term, Loan Term(5 years), Loan Amount(30,000), Interest Rate(7)', () => {
+    it ( 'Should calculate and display results correctly.', async () => {
+        await Confirm.CALCULATE[ 'Positive test sample 1' ]()
+    })
+})
+// 2.
+describe ( 'Calculate with values: Fixed Payments, Monthly Pay(38), Loan Amount(800), Interest Rate(13)', () => {
+    it ( 'Should calculate and display results correctly.', async () => {
+        await Confirm.CALCULATE[ 'Positive test sample 2' ]()
+    })
+})
+// 3.
+describe ( 'Enter any values and click Clear Button', () => {
+    it ( 'Inputs should be empty', async () => {
+
+    })
 })
