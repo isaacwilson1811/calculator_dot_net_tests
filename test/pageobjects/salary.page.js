@@ -41,6 +41,9 @@ class Salary extends BasePage {
     get inputVacationDaysPerYear () { return $('//input[@id="cvacation"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]')}
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]')}
+    get buttonSave () { return $('//img[@src="//d26tpo4cm8sb6k.cloudfront.net/img/save.svg"]') }
+    get resultSection () { return $('(//table[@class="cinfoT"])[1]') }
+    get resultHeading () { return $('//h2[@class="h2result"]') }
 
     // Main Component function
     async calculate ({salaryAmount, perUnit, hours, days, holidays, vacation}) {
@@ -61,14 +64,10 @@ class Salary extends BasePage {
     }
     UI = {
         'Heading element is the only h1 on the page': async () => {
-            await this.assertArrayLength( this.arrayOfComponentHeading, { 
-                expectedLength: 1
-            })
+            await this.assertArrayLength( this.arrayOfComponentHeading, { expectedLength: 1 })
         },
         'Heading text content matches requirement': async () => {
-            await this.assertText( this.componentHeading, { 
-                expectedText: this.requiredText.title
-            })
+            await this.assertText( this.componentHeading, { expectedText: this.requiredText.title })
         },
         'Heading text color matches requirement': async () => {
             await this.assertColor( this.componentHeading, {
@@ -77,9 +76,7 @@ class Salary extends BasePage {
             })
         },
         'Description element text matches requirement': async () => {
-            await this.assertText ( this.componentDescriptionParagraph, { 
-                expectedText: this.requiredText.description
-            })
+            await this.assertText ( this.componentDescriptionParagraph, { expectedText: this.requiredText.description })
         },
         'Usage Instruction image meets requirements': async () => {
             const image = this.instructionImg
@@ -90,12 +87,12 @@ class Salary extends BasePage {
         'Input container meets requirements': async () => {
             const container = this.inputContainer
             await this.assertOrderInDOM({elementFirst: container, elementSecond: this.rightColumn})
-            await this.assertColor(container, {
+            await this.assertColor( container, {
                 type: 'background',
                 colorFormat: 'hex',
                 expectedColor: '#eeeeee'
             })
-            await this.assertCSSBorder(container, {
+            await this.assertCSSBorder( container, {
                 expectedColor:'#bbbbbb',
                 expectedWidth: '1px',
                 expectedStyle: 'solid'
@@ -138,9 +135,7 @@ class Salary extends BasePage {
                 attribute: 'value',
                 expectedValue: 'Calculate'
             })
-            await this.assertHoverEffectBGC ( button, {
-                expectedBGColorOnHover: this.requiredColors[4]
-            })
+            await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4]})
             await this.assertBackgroundImage ( button, {
                 expectedImageURL: this.requiredSymbols[2],
                 expectedPosition: '0%'
@@ -152,10 +147,70 @@ class Salary extends BasePage {
                 attribute: 'value',
                 expectedValue: 'Clear'
             })
-            await this.assertHoverEffectBGC ( button, {
-                expectedBGColor: this.requiredColors[5],
-                expectedBGColorOnHover: this.requiredColors[4]
+            await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4] })
+        },
+        'Results are displayed to the right of inputs': async () => {
+            await this.assertOrderInDOM({elementFirst: this.leftColumn, elementSecond: this.resultSection})
+        },
+        'Result Heading meets requirements': async () => {
+            const heading = this.resultHeading
+            await this.assertText ( heading, { expectedText: 'Result' })
+            await this.assertColor ( heading, {
+                type: 'text', colorFormat: 'hex',
+                expectedColor: this.requiredColorsFunctional.important
             })
+            await this.assertColor ( heading, {
+                type: 'background', colorFormat: 'hex',
+                expectedColor: this.requiredColors[6]
+            })
+        },
+        'Save Icon is aligned to the right': async () => {
+            await this.assertCSSPropertyValue ( this.buttonSave, {
+                property: 'float', expectedValue: 'right'
+            })
+        },
+        'Result Table row and column count meets requirements': async () => {
+            const tableRows = $$('(//table[@class="cinfoT"])[1]/tbody/tr')
+            await this.assertArrayLength(tableRows, {expectedLength: 9 })
+            for (let row = 1; row < 10; row++) {
+                const columns = $$(`((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]/td`)
+                await this.assertArrayLength(columns, {expectedLength: 3})
+            }
+        },
+        'Top row of results table meets requirements': async () => {
+            const td1 = $('(((//table[@class="cinfoT"])[1]/tbody/tr)[1]/td)[1]')
+            await this.assertText(td1,{expectedText: ''})
+            await this.assertColor(td1,{type:'text',colorFormat:'hex', expectedColor:'#ffffff'})
+            await this.assertColor(td1,{type:'background',colorFormat:'hex', expectedColor:'#336699'})
+            const td2 = $('(((//table[@class="cinfoT"])[1]/tbody/tr)[1]/td)[2]')
+            await this.assertText(td2,{expectedText: 'Unadjusted'})
+            await this.assertColor(td2,{type:'text',colorFormat:'hex', expectedColor:'#ffffff'})
+            await this.assertColor(td2,{type:'background',colorFormat:'hex', expectedColor:'#336699'})
+            const td3 = $('(((//table[@class="cinfoT"])[1]/tbody/tr)[1]/td)[3]')
+            await this.assertText(td3,{expectedText: 'Holidays & vacation days adjusted'})
+            await this.assertColor(td3,{type:'text',colorFormat:'hex', expectedColor:'#ffffff'})
+            await this.assertColor(td3,{type:'background',colorFormat:'hex', expectedColor:'#336699'})
+        },
+        'Data rows of result table meet background color and border requirements. Columns are labeled and meet text requirments.': async () => {
+            const columnLabels = ['0','','Hourly', 'Daily', 'Weekly', 'Bi-weekly', 'Semi-monthly', 'Monthly', 'Quarterly', 'Annual']
+            for (let row = 2; row < 9; row++) {
+                const currentRow = $(`((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]`)
+                await this.assertColor(currentRow,{
+                    type:'background',colorFormat:'hex',
+                    expectedColor: row%2==0? '#ffffff' : '#eeeeee'
+                })
+                for (let col = 1; col < 4; col++){
+                    const currentCell = $(`(((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]/td)[${col}]`)
+                    await this.assertCSSBorder(currentCell, {
+                        expectedColor:'#cccccc',
+                        expectedWidth: '1px',
+                        expectedStyle: 'solid'
+                    })
+                    await this.assertText(currentCell, { 
+                        expectedText: col==1? columnLabels[row] : expect.stringContaining('$')
+                    })
+                }
+            }
         }
     }
 
