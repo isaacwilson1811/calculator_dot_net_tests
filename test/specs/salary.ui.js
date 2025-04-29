@@ -39,29 +39,29 @@ describe ( 'Input container holding the following elements and buttons.', () => 
     it ( 'Should be displayed to the left of Result section, with required background color and border.', async () => {
         await Confirm.UI[ 'Input container meets requirements' ]()
     })
-    it ( 'Input and label with text: "Salary amount per.', async () => {
-        await Confirm.UI[ 'Salary ammount input label meet requirements' ]()
+    it ( 'Input and label containing text text: "Salary amount". Input has dollar sign background image aligned to the left.', async () => {
+        await Confirm.UI[ 'Salary ammount input and label meet requirements' ]()
     })
     it ( 'Unit selection dropdown list defaulting to "Hour". Contains options: Hour, Day, Week, Bi-Week, Semi-month, Month, Quarter, Year', async () => {
-
+        await Confirm.UI[ 'Unit select meets requirments' ]()
     })
     it ( 'Input and label with text: "Hours per week"', async () => {
-
+        await Confirm.UI[ 'Hours per week input and label meet requirements' ]()
     })
     it ( 'Input and label with text: "Days per week"', async () => {
-
+        await Confirm.UI[ 'Days per week input and label meet requirements' ]()
     })
     it ( 'Input and label with text: "Holidays per year"', async () => {
-
+        await Confirm.UI[ 'Holidays per year input and label meet requirements' ]()
     })
     it ( 'Input and label with text: "Vacation days per year"', async () => {
-
+        await Confirm.UI[ 'Vacation days per year input and label meet requirements' ]()
     })
     it ( 'Calculate button with a functioning hover state, appropriate colors, and play-arrow icon.', async () => {
-
+        await Confirm.UI[ 'Calculate button meets requirements' ]()
     })
     it ( 'Clear button with a functioning hover state and appropriate colors applied.', async () => {
-
+        await Confirm.UI[ 'Clear button meets requirments' ]()
     })
 })
 // 5.
