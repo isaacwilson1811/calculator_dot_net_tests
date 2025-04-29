@@ -4,6 +4,10 @@ import BasePage from './basepage.js'
 class Payment extends BasePage {
     endpoint = 'payment-calculator.html'
 
+    get componentHeading () { return $('//h1') }
+    get arrayOfComponentHeading () { return $$('//h1') }
+    get componentDescriptionParagraph () { return $('(//div[@id="content"]/p)[1]') }
+    get instructionHeadingImg () { return $('//div[@id="insmdc"]/img') }
     get buttonFixTerm () { return $('//a[@onclick="popNMenu(\'fixterm\',1);"]') }
     get inputLoanTerm () { return $('//input[@id="cloanterm"]') }
     get buttonFixPay () { return $('//a[@onclick="popNMenu(\'fixpay\',1);"]') }
@@ -17,6 +21,7 @@ class Payment extends BasePage {
     get resultTableRows () { return $$('(//table[@class="cinfoT"]/tbody)[1]/tr')}
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
+    get inputContainer () { return $('//div[@class="panel2"]/table') }
 
     async calculate ({mode, loanTerm, monthlyPay, loanAmount, interestRate}) {
         if (mode == 'Fixed Term'){
@@ -185,6 +190,103 @@ class Payment extends BasePage {
             await this.assertText(this.inputLoanTerm, {expectedText: ''})
             await this.assertText(this.inputLoanAmount, {expectedText: ''})
             await this.assertText(this.inputInterestRate, {expectedText: ''})
+        }
+    }
+    UI = {
+        'Component title heading meets requirements': async () => {
+            await this.assertArrayLength( this.arrayOfComponentHeading, { expectedLength: 1 })
+            await this.assertText( this.componentHeading, { expectedText: 'Payment Calculator' })
+            await this.assertColor( this.componentHeading, {
+                type: 'text', colorFormat: 'hex',
+                expectedColor: this.requiredColors[0]
+            })
+        },
+        'Description element meets requirements': async () => {
+            await this.assertText ( this.componentDescriptionParagraph, { 
+                expectedText: 'The Payment Calculator can determine the monthly payment amount or loan term for a fixed interest loan. Use the "Fixed Term" tab to calculate the monthly payment of a fixed-term loan. Use the "Fixed Payments" tab to calculate the time to pay off a loan with a fixed monthly payment. For more information about or to do calculations specifically for car payments, please use the Auto Loan Calculator. To find net payment of salary after taxes and deductions, use the Take-Home-Pay Calculator.'
+            })
+        },
+        'Instruction heading meets requirements': async () => {
+            await this.assertOrderInDOM({
+                elementFirst: this.instructionHeadingImg,
+                elementSecond: $('//form[@name="calform"]')
+            })
+            await this.assertAttributeValue( this.instructionHeadingImg, {
+                attribute: 'src',
+                expectedValue: '//d26tpo4cm8sb6k.cloudfront.net/img/svg/insm.svg'
+            })
+            await this.assertAttributeValue( this.instructionHeadingImg, {
+                attribute: 'alt',
+                expectedValue: 'Modify the values and click the calculate button to use'
+            })
+        },
+        'Input container meets requirements': async () => {
+            await this.assertOrderInDOM({
+                elementFirst: this.inputContainer,
+                elementSecond: $('//div[@class="rightresult"]')
+            })
+        },
+        '2 Tab buttons labeled Fixed Term and Fixed Payments are present': async () => {
+            await this.assertExists(this.buttonFixPay)
+            await this.assertExists(this.buttonFixTerm)
+        },
+        'Loan Amount input and label meet requirements': async () => {
+            await this.assertExists($('//td[contains(text(),"Loan Amount")]'))
+            await this.assertBackgroundImage(this.inputLoanAmount, {
+                expectedImageURL: this.requiredSymbols[1],
+                expectedPosition: '0% 50%'
+            })
+        },
+        'Loan Term input and label meet requirements': async () => {
+            await this.assertExists($('//td[contains(text(),"Loan Term")]'))
+            await this.assertExists(this.inputLoanTerm)
+            await this.assertExists($('//span[@class="inuiyearspan"][contains(text(),"years")]'))
+        },
+        'Interest Rate input and label meet requirements': async () => {
+            await this.assertExists($('//td[contains(text(),"Interest Rate")]'))
+            await this.assertExists(this.inputInterestRate)
+            await this.assertBackgroundImage(this.inputInterestRate, {
+                expectedImageURL: this.requiredSymbols[0],
+                expectedPosition: '100% 50%'
+            })
+        },
+        'Calculate button meets requirements': async () => {
+            const button = this.buttonCalculate
+            await this.assertAttributeValue ( button, {
+                attribute: 'value',
+                expectedValue: 'Calculate'
+            })
+            await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4]})
+            await this.assertBackgroundImage ( button, {
+                expectedImageURL: this.requiredSymbols[2],
+                expectedPosition: '0%'
+            })
+        },
+        'Clear button meets requirements': async () => {
+            const button = this.buttonClear
+            await this.assertAttributeValue ( button, {
+                attribute: 'value',
+                expectedValue: 'Clear'
+            })
+            await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4] })
+        },
+        'Fixed Payment button meets hover and active requirements': async () => {
+            // inactive state
+            await this.assertColor(this.buttonFixPay, {expectedColor: '#ffffff', type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixPay, {expectedColor: '#336699', type:'background', colorFormat: 'hex'})
+            // hover state
+            await this.assertHoverEffectBGC(this.buttonFixPay,{
+                expectedBGColorOnHover: '#eeeeee'
+            })
+            // click
+            await this.buttonFixPay.click()
+            // active state
+            await this.assertColor(this.buttonFixPay, {expectedColor: '#000000', type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixPay, {expectedColor: '#eeeeee', type:'background', colorFormat: 'hex'})
+        },
+        'Fixed Payment mode inputs': async () => {
+            await this.assertExists()
+            // 
         }
     }
 }
