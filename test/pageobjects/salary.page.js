@@ -44,6 +44,8 @@ class Salary extends BasePage {
     get buttonSave () { return $('//img[@src="//d26tpo4cm8sb6k.cloudfront.net/img/save.svg"]') }
     get resultSection () { return $('(//table[@class="cinfoT"])[1]') }
     get resultHeading () { return $('//h2[@class="h2result"]') }
+    get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
+    get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
 
     // Main Component function
     async calculate ({salaryAmount, perUnit, hours, days, holidays, vacation}) {
@@ -54,6 +56,17 @@ class Salary extends BasePage {
         await this.inputHolidaysPerYear.setValue(holidays)
         await this.inputVacationDaysPerYear.setValue(vacation)
         await this.buttonCalculate.click()
+    }
+    async verifyResults(col2,col3){
+        for (let row = 2; row < 9; row++) {
+            for (let col = 2; col < 4; col++){
+                const currentCell = $(`(((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]/td)[${col}]`)
+                let text
+                if (col == 2){text = col2[row-2]}
+                else if (col == 3){ text = col3[row-2]}
+                await this.assertText(currentCell, { expectedText: text })
+            }
+        }
     }
 
     // Test Spec Logic
@@ -193,11 +206,12 @@ class Salary extends BasePage {
         },
         'Data rows of result table meet background color and border requirements. Columns are labeled and meet text requirments.': async () => {
             const columnLabels = ['0','','Hourly', 'Daily', 'Weekly', 'Bi-weekly', 'Semi-monthly', 'Monthly', 'Quarterly', 'Annual']
+            const rowBGColor = {odd: '#ffffff', even: '#eeeeee'}
             for (let row = 2; row < 9; row++) {
                 const currentRow = $(`((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]`)
                 await this.assertColor(currentRow,{
-                    type:'background',colorFormat:'hex',
-                    expectedColor: row%2==0? '#ffffff' : '#eeeeee'
+                    type:'background', colorFormat:'hex',
+                    expectedColor: row%2==0? rowBGColor.odd : rowBGColor.even
                 })
                 for (let col = 1; col < 4; col++){
                     const currentCell = $(`(((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]/td)[${col}]`)
@@ -211,6 +225,46 @@ class Salary extends BasePage {
                     })
                 }
             }
+        },
+        'Additional information text meets positional requirements': async () => {
+            const paragraph = $('//p[contains(text(),"This salary calculator assumes")]')
+            await this.assertOrderInDOM({elementFirst: $('//div[@id="clear"]'), elementSecond: paragraph})
+        },
+        'Additional information text meets text content requirements': async () => {
+            const paragraph = $('//p[contains(text(),"This salary calculator assumes")]')
+            await this.assertText(paragraph,{
+                expectedText: "This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed to be holidays and vacation days adjusted values. This calculator also assumes 52 working weeks or 260 weekdays per year in its calculations. The unadjusted results ignore the holidays and paid vacation days."
+            })
+        },
+        'Calculating hides the description text': async () => {
+            await this.calculate({
+                salaryAmount: '2', perUnit: 'Annual',
+                hours: '2', days: '2', holidays: '2', vacation: '2'
+            })
+            await expect($('//div[@id="content"]/p[contains(text(),"The Salary Calculator converts")]')).not.toBeExisting()
+        },
+        'Calculating updates the result table text content': async () => {
+            await this.calculate({
+                salaryAmount: '1', perUnit: 'Annual',
+                hours: '1', days: '1', holidays: '1', vacation: '1'
+            })
+            await this.verifyResults(
+                ['$0.02', '$0.02', '$0', '$0', '$0', '$0', '$0', '$1'],
+                ['$0.02', '$0.02', '$0', '$0', '$0', '$0', '$0', '$1']
+            )
+        },
+        'Error container replaces results section': async () => {
+            await this.calculate({
+                salaryAmount: '', perUnit: 'Daily',
+                hours: '', days: '', holidays: '', vacation: ''
+            })
+            await expect(this.resultHeading).not.toBeExisting()
+            await expect(this.errorSection).toBeExisting()
+            
+        },
+        'Error message text is highlighted in the correct color': async () => {
+            const font = this.errorSection.$('//div/font')
+            await this.assertAttributeValue(font, {attribute: 'color', expectedValue: 'red'})
         }
     }
 
