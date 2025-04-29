@@ -66,17 +66,24 @@ describe ( 'Input container holding the following elements and buttons.', () => 
 })
 // 5.
 describe( 'Result section and data table', () => {
-    it ( '', async () => {
-
+    it ( 'Result section is displayed to the right of input container', async () => {
+        await Confirm.UI[ 'Results are displayed to the right of inputs' ]()
     })
-// Result section is displayed to the right of input container
-// * h2 heading element with text 'Result' and appropriate text / background color applied.
-// * Save Icon aligned to the right side of heading. Hover effect changes the cursor style only.
-// * Table with 3 columns, 1 heading row and 8 data rows:
-// * Table heading row displays column labels (blank), “Unadjusted”, and “Holidays & vacation days adjusted”. Accent color and background color is applied.
-// * 8 Table data rows with alternating background color and cell borders applied.
-// * The column layout of the data rows are 1st column: Labels, 2nd column: dollar amounts, 3rd column: dollar amounts.
-// * Labels in 1st column are: Hourly, Daily, Weekly, Bi-weekly, Semi-monthly, Monthly, Quarterly, Annual
+    it ( 'h2 heading element with text "Result" and appropriate text / background color applied.', async () => {
+        await Confirm.UI[ 'Result Heading meets requirements' ]()
+    })
+    it ( 'Save Icon aligned to the right side of heading.', async () => {
+        await Confirm.UI[ 'Save Icon is aligned to the right' ]()
+    })
+    it ( 'Result Table with 3 columns, 1 heading row and 8 data rows:', async () => {
+        await Confirm.UI[ 'Result Table row and column count meets requirements' ]()
+    })
+    it ( 'Table heading row displays column labels (blank), “Unadjusted”, and “Holidays & vacation days adjusted”. Required text color and background color are applied.', async () => {
+        await Confirm.UI[ 'Top row of results table meets requirements' ]()
+    })
+    it ( '8 Table data rows with alternating background color and cell borders applied.\n The column layout of the data rows are 1st column: Labels, 2nd column: dollar amounts, 3rd column: dollar amounts.\n Labels in 1st column are: Hourly, Daily, Weekly, Bi-weekly, Semi-monthly, Monthly, Quarterly, Annual', async () => {
+        await Confirm.UI[ 'Data rows of result table meet background color and border requirements. Columns are labeled and meet text requirments.' ]()
+    })
 })
 // 6.
 describe( 'Additional information text element', () => {
