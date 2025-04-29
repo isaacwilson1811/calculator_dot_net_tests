@@ -74,6 +74,14 @@ class Salary extends BasePage {
             await this.assertText(input,{expectedText: ''})
         }
     }
+    async verifyErrors(expectedErrors) { 
+        let count = 0
+        for (const message in this.errorMessages) {
+            const text = await message.getHTML()
+            await expect(text).toBe(expectedErrors[count])
+            count++
+        }
+    }
     getRandomNumber(min,max){
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
@@ -82,6 +90,34 @@ class Salary extends BasePage {
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
+        }
+    }
+    ERROR = {
+        'Blank values and random unit choice produce required errors': async () => {
+            const randomOption = this.getRandomNumber(1,7)
+            const option = this.expectedUnitOptions[randomOption].value
+            await this.calculate({
+                salaryAmount: '', perUnit: option,
+                hours: '', days: '', holidays: '', vacation: ''
+            })
+            await this.verifyErrors([
+                'Please provide a positive salary amount.',
+                'Please provide a positive hours per week value.',
+                'Please provide a positive days per week value.',
+                'Please provide a positive holidays per year value.',
+                'Please provide a positive vacation days per year value.'
+            ])
+        },
+        'Holidays and Vacation over the limit results in specific error': async () => {
+            const randomOption = this.getRandomNumber(1,7)
+            const option = this.expectedUnitOptions[randomOption].value
+            await this.calculate({
+                salaryAmount: '1', perUnit: option,
+                hours: '1', days: '1', holidays: '365', vacation: '365'
+            })
+            await this.verifyErrors([
+                'The number of holidays and vacation days are out of range for this calculator!'
+            ])
         }
     }
     CALCULATE = {
