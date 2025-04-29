@@ -12,16 +12,13 @@ describe ( 'Navigate to the page for the component being tested.', () => {
 })
 // 1.
 describe ( 'Select Fixed Term tab. Calculate with all values set to (-1)', () => {
-    it ( '', async () => {
-
+    it ( 'Should display specific errors', async () => {
+        await Confirm.ERROR[ 'Fixed Term and all -1 values produces specific errors' ]()
     })
-    // results in screenshot from test case
 })
-
 // 2.
 describe ( 'Select Fixed Payments tab. Calculate with all values set to (-1)', () => {
-    it ( '', async () => {
-
+    it ( 'Should display specific errors', async () => {
+        await Confirm.ERROR[ 'Fixed Payments and all -1 values produces specific errors' ]()
     })
-    // results in screenshot from test case
 })
