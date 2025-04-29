@@ -11,6 +11,14 @@ describe ( 'Navigate to the page for the component being tested.', () => {
     })
 })
 // 1.
-describe ( '', () => {
-    it ( '', async () => {})
+describe ( 'Delete all default input values or Click Clear. Click Calculate.', () => {
+    it ( 'Should display the appropriate errors', async () => {
+        await Confirm.ERROR[ 'Blank values and random unit choice produce required errors' ]()
+    })
+})
+// 2.
+describe ( 'Calculate with incorrect values: Salary ($1), per [any], Days(1), Holidays(365), Vacation(365),', () => {
+    it ( 'Should display the appropriate error', async () => {
+        await Confirm.ERROR[ 'Holidays and Vacation over the limit results in specific error' ]()
+    })
 })
