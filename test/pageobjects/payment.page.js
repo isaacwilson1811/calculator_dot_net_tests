@@ -77,7 +77,63 @@ class Payment extends BasePage {
                 body: 'You will need to pay $38.00 every month for 2 years 0.02 months to payoff the debt.',
                 tableData: ['Time Required to Clear Debt','2.00 years','Total of 24.02 Payments','$912.92','Total Interest','$112.92']
             })
-        }
+        },
+        'Fixed Term MIN': async () => {
+            await this.calculate({
+                mode: 'Fixed Term',
+                loanTerm: '1',
+                loanAmount: '1',
+                interestRate: '0'
+            })
+            await this.verifyResults({
+                mode: 'Fixed Term',
+                header: 'Monthly Payment:   $0.08',
+                body: 'You will need to pay $0.08 every month for 1 years to payoff the debt.',
+                tableData: ['Total of 12 Payments','$1.00','Total Interest','$0.00']
+            })
+        },
+        'Fixed Payments MIN': async () => {
+            await this.calculate({
+                mode: 'Fixed Payments',
+                monthlyPay: '1',
+                loanAmount: '1',
+                interestRate: '0'
+            })
+            await this.verifyResults({
+                mode: 'Fixed Payments',
+                header: 'Payoff: 1.00 months',
+                body: 'You will need to pay $1.00 every month for 1.00 months to payoff the debt.',
+                tableData: ['Time Required to Clear Debt','0.08 years','Total of 1 Payments','$1.00','Total Interest','$0.00']
+            })
+        },
+        'Fixed Term MAX': async () => {
+            await this.calculate({
+                mode: 'Fixed Term',
+                loanTerm: '100',
+                loanAmount: '100,000,000,000',
+                interestRate: '99'
+            })
+            await this.verifyResults({
+                mode: 'Fixed Term',
+                header: 'Monthly Payment:   $8,250,000,000.00',
+                body: 'You will need to pay $8,250,000,000.00 every month for 100 years to payoff the debt.',
+                tableData: ['Total of 1,200 Payments','$9,900,000,000,000.00','Total Interest','$9,800,000,000,000.00']
+            })
+        },
+        'Fixed Payments MAX': async () => {
+            await this.calculate({
+                mode: 'Fixed Payments',
+                monthlyPay: '8,250,000,001.00',
+                loanAmount: '100,000,000,000',
+                interestRate: '99'
+            })
+            await this.verifyResults({
+                mode: 'Fixed Payments',
+                header: 'Payoff: 24 years 0.04 months',
+                body: 'You will need to pay $8,250,000,001.00 every month for 24 years 0.04 months to payoff the debt.',
+                tableData: ['Time Required to Clear Debt','24.00 years','Total of 288.04 Payments','$2,376,291,677,694.53','Total Interest','$2,276,291,677,694.53']
+            })
+        },
     }
     CLEAR = {
         'Inputs empty after clicking Clear Button': async () => {
