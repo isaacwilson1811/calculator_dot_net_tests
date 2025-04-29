@@ -1,9 +1,14 @@
-import { $ } from '@wdio/globals'
+import { $, expect } from '@wdio/globals'
 import BasePage from './basepage.js';
 
 class CompoundInterest extends BasePage {
     endpoint = 'compound-interest-calculator.html'
-
+    // Element Selectors
+    get componentHeading () { return $('//h1') }
+    get componentDescription () { return $('(//div[@id="content"]/p)[1]') }
+    get arrayOfComponentHeading () { return $$('//h1') }
+    get instructionHeadingImg () { return $('//div[@id="insmdc"]/img') }
+    get inputPanel () { return $('//table[@class="panel"]') }
     get inputInterestRate () { return $('//input[@id="cinterestrate"]') }
     get selectInCompound () { return $('//select[@id="cincompound"]') }
     get selectOutCompound () { return $('//select[@id="coutcompound"]') }
@@ -11,6 +16,7 @@ class CompoundInterest extends BasePage {
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
     get resultText () { return $('//p[@class="verybigtext"]') }
     get outPutInterest () { return $('//td[@class="bigtext"][@align="center"]/font/b') }
+    get outPutInterestFont () { return $('//td[@class="bigtext"][@align="center"]/font') }
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessage () { return this.errorSection.$('//div/font') }
 
@@ -107,6 +113,81 @@ class CompoundInterest extends BasePage {
                     await this.assertText(this.outPutInterest,{expectedText: expectedOutPut[calcCount]})
                     calcCount++
                 }
+            }
+        }
+    }
+    UI = {
+        'Heading element meets requirements': async () => {
+            await this.assertArrayLength( this.arrayOfComponentHeading, { 
+                expectedLength: 1 
+            })
+            await this.assertText( this.componentHeading, {
+                expectedText: 'Compound Interest Calculator'
+            })
+            await this.assertColor( this.componentHeading, {
+                type: 'text', colorFormat: 'hex',
+                expectedColor: '#003366'
+            })
+        },
+        'Description element meets requirements': async () => {
+            await this.assertText( this.componentDescription,{
+                expectedText: 'The Compound Interest Calculator below can be used to compare or convert the interest rates of different compounding periods. Please use our Interest Calculator to do actual calculations on compound interest.'
+            })
+        },
+        'Instruction heading meets requirements': async () => {
+            await this.assertOrderInDOM({
+                elementFirst: this.instructionHeadingImg,
+                elementSecond: $('//form[@name="calform"]')
+            })
+            await this.assertAttributeValue( this.instructionHeadingImg, {
+                attribute: 'src',
+                expectedValue: '//d26tpo4cm8sb6k.cloudfront.net/img/svg/insm.svg'
+            })
+            await this.assertAttributeValue( this.instructionHeadingImg, {
+                attribute: 'alt',
+                expectedValue: 'Modify the values and click the calculate button to use'
+            })
+        },
+        'Input container meets requirements': async () => {
+            await this.assertAttributeValue( this.inputPanel, {
+                attribute: 'align',
+                expectedValue: 'center'
+            })
+            await this.assertColor( this.inputPanel, {
+                type: 'background', colorFormat: 'hex',
+                expectedColor: '#eeeeee'
+            })
+            await this.assertCSSBorder( this.inputPanel, {
+                expectedColor: '#bbbbbb',
+                expectedStyle: 'solid',
+                expectedWidth: '1px'
+            })
+        },
+        'Interest Input and Label meet requirements': async () => {
+            await this.assertExists($('//td[contains(text(),"Input Interest")]'))
+            await this.assertBackgroundImage(this.inputInterestRate,{
+                expectedImageURL: 'url(\"data:image/svg+xml;utf8,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"17px\\\" height=\\\"20px\\\"><text x=\\\"1\\\" y=\\\"15\\\" style=\\\"font: normal 16px arial;\\\">%</text></svg>\")',
+                expectedPosition: '100% 50%'
+            })
+        },
+        'Compound 1 dropdown and Label meet requirements': async () => {
+            await this.assertExists($('(//td[contains(text(),"Compound")])[1]'))
+            for (const option of this.selectCompoundValues) {
+                await this.selectInCompound.selectByAttribute('value', option)
+            }
+        },
+        'Output Interest element and label meet requirements': async () => {
+            await this.assertExists($('//td[contains(text(),"Output Interest")]'))
+            await this.assertText(this.outPutInterest, {expectedText: expect.stringContaining('%')})
+            await this.assertAttributeValue(this.outPutInterestFont,{
+                attribute: 'color',
+                expectedValue: 'green'
+            })
+        },
+        'Compound 2 dropdown and Label meet requirements': async () => {
+            await this.assertExists($('(//td[contains(text(),"Compound")])[2]'))
+            for (const option of this.selectCompoundValues) {
+                await this.selectOutCompound.selectByAttribute('value', option)
             }
         }
     }
