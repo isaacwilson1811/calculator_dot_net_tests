@@ -56,6 +56,7 @@ class Salary extends BasePage {
         await this.inputHolidaysPerYear.setValue(holidays)
         await this.inputVacationDaysPerYear.setValue(vacation)
         await this.buttonCalculate.click()
+        await browser.scroll(0, -200)
     }
     async verifyResults(col2,col3){
         for (let row = 2; row < 9; row++) {
@@ -68,11 +69,48 @@ class Salary extends BasePage {
             }
         }
     }
+    async verifyInputsClear() {
+        const inputs = [this.inputSalaryAmount, this.inputHoursPerWeek, this.inputDaysPerWeek, this.inputHolidaysPerYear, this.inputVacationDaysPerYear]
+        for (const input of inputs) {
+            await this.assertText(input,{expectedText: ''})
+        }
+    }
 
     // Test Spec Logic
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
+        }
+    }
+    CALCULATE = {
+        'Inputs are empty after clicking Clear': async () => {
+            await this.inputSalaryAmount.setValue('100')
+            await this.inputHoursPerWeek.setValue('100')
+            await this.inputDaysPerWeek.setValue('100')
+            await this.inputHolidaysPerYear.setValue('100')
+            await this.inputVacationDaysPerYear.setValue('100')
+            await this.buttonClear.click()
+            await this.verifyInputsClear()
+        },
+        'Positive test sample 1': async () => {
+            await this.calculate({
+                salaryAmount: '80000', perUnit: 'Annual',
+                hours: '40', days: '5', holidays: '12', vacation: '25'
+            })
+            await this.verifyResults(
+                ['$44.84','$358.74','$1,794','$3,587','$3,886','$7,773','$23,318','$93,274'],
+                ['$38.46','$307.69','$1,538','$3,077','$3,333','$6,667','$20,000','$80,000']
+            )
+        },
+        'Positive test sample 2': async () => {
+            await this.calculate({
+                salaryAmount: '11', perUnit: 'Hourly',
+                hours: '45', days: '6', holidays: '5', vacation: '0'
+            })
+            await this.verifyResults(
+                ['$11.00','$82.50','$495','$990','$1,073','$2,145','$6,435','$25,740'],
+                ['$10.79','$80.91','$485','$971','$1,052','$2,104','$6,311','$25,245']
+            )
         }
     }
     UI = {
