@@ -11,6 +11,26 @@ describe ( 'Navigate to the page for the component being tested.', () => {
     })
 })
 // 1.
-describe ( '', () => {
-    it ( '', async () => {})
+describe ( 'Calculate with Fixed Term and MIN values: Loan amount(1), Loan Term(1), Interest Rate(0)', () => {
+    it ( 'Should calculate and display results correctly.', async () => {
+        await Confirm.CALCULATE[ 'Fixed Term MIN' ]()
+    })
+})
+// 2.
+describe ( 'Calculate with Fixed Payments and MIN values: Loan amount(1), Monthly Pay(1), Interest Rate(0)', () => {
+    it ( 'Should calculate and display results correctly.', async () => {
+        await Confirm.CALCULATE[ 'Fixed Payments MIN' ]()
+    })
+})
+// 3.
+describe ( 'Calculate with Fixed Term and MAX values: Loan Amount(100,000,000,000), Loan Term(100), Interest Rate(99)', () => {
+    it ( 'Should calculate and display results correctly.', async () => {
+        await Confirm.CALCULATE[ 'Fixed Term MAX' ]()
+    })
+})
+// 4.
+describe ( 'Calculate with Fixed Payments and MAX values: Loan Amount(100,000,000,000), Monthly Pay(8,250,000,001.00), Interest Rate(99%', () => {
+    it ( 'Should calculate and display results correctly.', async () => {
+        await Confirm.CALCULATE[ 'Fixed Payments MAX' ]()
+    })
 })
