@@ -14,6 +14,7 @@ class CompoundInterest extends BasePage {
     get selectOutCompound () { return $('//select[@id="coutcompound"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
+    get resultHeading () { return $('//h2[@class="h2result"]') }
     get resultText () { return $('//p[@class="verybigtext"]') }
     get outPutInterest () { return $('//td[@class="bigtext"][@align="center"]/font/b') }
     get outPutInterestFont () { return $('//td[@class="bigtext"][@align="center"]/font') }
@@ -189,6 +190,53 @@ class CompoundInterest extends BasePage {
             for (const option of this.selectCompoundValues) {
                 await this.selectOutCompound.selectByAttribute('value', option)
             }
+        },
+        'Instruction heading is removed after calculating valid input': async () => {
+            await this.openComponentPage(this.endpoint)
+            await this.calculate({interestRate: '10', inCompound: 'monthly', outCompound: 'daily' })
+            await expect(this.instructionHeadingImg).not.toBeExisting()
+        },
+        'Result Heading meets requirements': async () => {
+            await this.assertText ( this.resultHeading, {
+                expectedText: 'Result'
+            })
+            await this.assertColor ( this.resultHeading, {
+                type: 'text', colorFormat: 'hex',
+                expectedColor: this.requiredColorsFunctional.important
+            })
+            await this.assertColor ( this.resultHeading, {
+                type: 'background', colorFormat: 'hex',
+                expectedColor: this.requiredColors[6]
+            })
+        },
+        'Result text meets requirements': async () => {
+            await this.assertExists($('//p[@class="verybigtext"]'))
+            await this.assertAttributeValue($('//p[@class="verybigtext"]/b/font'),{
+                attribute: 'color',
+                expectedValue: 'green'
+            })
+        },
+        'Instruction heading is removed after producing error': async () => {
+            await this.openComponentPage(this.endpoint)
+            await this.calculate({interestRate: '', inCompound: 'monthly', outCompound: 'annually' })
+            await expect(this.instructionHeadingImg).not.toBeExisting()
+        },
+        'Error section meets display requirement': async () => {
+            await this.assertExists(this.errorSection)
+            await this.assertOrderInDOM({
+                elementFirst: this.errorSection,
+                elementSecond: this.inputPanel
+            })
+            await this.assertExists(this.errorMessage)
+        },
+        'Error message meets color requirement': async () => {
+            await this.assertAttributeValue(this.errorMessage,{
+                attribute: 'color',
+                expectedValue: 'red'
+            })
+        },
+        'Output Interest meets error display requirement': async () => {
+            await this.assertText(this.outPutInterest,{expectedText: '?%'})
         }
     }
 }
