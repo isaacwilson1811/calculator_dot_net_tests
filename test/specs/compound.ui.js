@@ -48,14 +48,28 @@ describe ( 'Container element holding value inputs and function buttons.', () =>
 })
 // 5.
 describe ( 'Enter a valid set of inputs and click Calculate to produce result section.', () => {
-    it ( 'The instructional image heading disappears.', async () => {})
-    it ( 'h2 heading element with text \'Result\' and appropriate text / background color applied.', async () => {})
-    it ( 'Lines of large result description text with calculated values highlighted in appropriate color.', async () => {})
+    it ( 'The instructional image heading disappears.', async () => {
+        await Confirm.UI[ 'Instruction heading is removed after calculating valid input' ]()
+    })
+    it ( 'h2 heading element with text \'Result\' and appropriate text / background color applied.', async () => {
+        await Confirm.UI[ 'Result Heading meets requirements' ]()
+    })
+    it ( 'Lines of large result description text with calculated values highlighted in appropriate color.', async () => {
+        await Confirm.UI[ 'Result text meets requirements' ]()
+    })
 })
 // 6.
 describe ( 'Enter an invalid set of inputs and click Calculate to produce an error message.', () => {
-    it ( 'The instructional image heading disappears.', async () => {})
-    it ( 'A single Caution icon and error message(s) are displayed above the input container.', async () => {})
-    it ( 'Text is highlighted in appropriate error color.', async () => {})
-    it ( 'Text below Output Interest is displayed as “?%“', async () => {})
+    it ( 'The instructional image heading disappears.', async () => {
+        await Confirm.UI[ 'Instruction heading is removed after producing error' ]()
+    })
+    it ( 'A single Caution icon and error message(s) are displayed above the input container.', async () => {
+        await Confirm.UI[ 'Error section meets display requirement' ]()
+    })
+    it ( 'Text is highlighted in appropriate error color.', async () => {
+        await Confirm.UI[ 'Error message meets color requirement' ]()
+    })
+    it ( 'Text below Output Interest is displayed as “?%“', async () => {
+        await Confirm.UI[ 'Output Interest meets error display requirement' ]()
+    })
 })
