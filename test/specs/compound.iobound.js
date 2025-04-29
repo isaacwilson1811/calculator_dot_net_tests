@@ -13,14 +13,12 @@ describe ( 'Navigate to the page for the component being tested.', () => {
 // 1.
 describe ( 'Input min value Interest (0%). Calculate all combinations of both compound selections.', () => {
     it ( 'All results of output interest should be 0.0000000000% or 0% regardless of combination.', async () => {
-
+        await Confirm.CALCULATE[ 'All combinations of min value calculate the same output value of 0' ]()
     })
-    // decide on how many its you will use.
-    // one per combination?
 })
 // 2.
 describe ( 'Input max value Interest (99%). Calculate all combinations of both compound selections.', () => {
     it ( 'Results should match expected results', async () => {
-
+        await Confirm.CALCULATE[ 'All combinations of max value calculate' ]()
     })
 })
