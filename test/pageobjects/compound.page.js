@@ -9,13 +9,10 @@ class CompoundInterest extends BasePage {
     get selectOutCompound () { return $('//select[@id="coutcompound"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
-
-    get result () {
-        return $('//p[@class="verybigtext"]//b//font[@color="green"]')
-    }
-
     get resultText () { return $('//p[@class="verybigtext"]') }
     get outPutInterest () { return $('//td[@class="bigtext"][@align="center"]/font/b') }
+    get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
+    get errorMessage () { return this.errorSection.$('//div/font') }
 
     selectCompoundValues = [ 'annually', 'semiannually', 'quarterly', 'monthly', 'semimonthly', 'biweekly', 'weekly', 'daily', 'continuously']
     
@@ -36,6 +33,21 @@ class CompoundInterest extends BasePage {
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
+        }
+    }
+    ERROR = {
+        'Error displayed when no input is calculated': async () => {
+            await this.calculate({interestRate: '', inCompound: 'daily', outCompound: 'semimonthly'})
+            await expect(this.errorSection).toBeExisting()
+            await this.assertText(this.errorMessage,{expectedText:'Please provide a numeric input interest rate.'})
+            await this.assertAttributeValue(this.errorMessage,{
+                attribute: 'color',
+                expectedValue: 'red'
+            })
+        },
+        'Output Interest is displayed as ?%': async () => {
+            await this.calculate({interestRate: 'wrong type', inCompound: 'quarterly', outCompound: 'monthly'})
+            await this.assertText(this.outPutInterest,{expectedText: '?%'})
         }
     }
     CALCULATE = {
