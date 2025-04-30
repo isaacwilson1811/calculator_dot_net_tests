@@ -85,24 +85,24 @@ describe ( 'Result section', () => {
         await Confirm.UI['Result table meets requirements']()
     })
 })
-// // 8.
+// 8.
 describe ( 'Enter a valid set of inputs with Fixed Term tab selected and click Calculate.', () => {
     it ( 'The values in the payment results are updated.', async () => {
-        Confirm.UI[ 'Valid inputs update results' ]()
+        await Confirm.UI[ 'Valid inputs update results' ]()
     })
     it ( 'The description paragraph from step 2 disappears.', async () => {
-
+        await Confirm.UI[ 'Description paragraph is no longer on the page' ]()
     })
 })
-// // 9.
-// describe ( 'Enter a valid set of inputs with Fixed Payments tab selected and click Calculate.', () => {
-//     it ( 'Monthly Payment Heading text is replaced with “Payoff: _ years _ months“', async () => {})
-//     it ( 'A new table row is added to the top of the 2x2 table from step 7.', async () => {})
-//     it ( 'Cells in the row display as “Time Required to Clear Debt“ and “_ years”', async () => {})
-//     it ( 'The data in the results is updated.', async () => {})
-// })
-// // 10.
-// describe ( 'Enter an invalid set of inputs with either tab selected and click Calculate to produce error message(s).', () => {
-//     it ( 'error message(s) should replace the entire result and graph section.', async () => {})
-//     it ( 'The error text should be highlighted in the appropriate color.', async () => {})
-// })
+// 9.
+describe ( 'Enter a valid set of inputs with Fixed Payments tab selected and click Calculate.', () => {
+    it ( 'Monthly Payment Heading text is replaced with “Payoff: _ years _ months“ \n A new table row is added to the top of the 2x2 table from step 7.\n Cells in the row display as “Time Required to Clear Debt“ and “_ years”\n The data in the results is updated.', async () => {
+        await Confirm.UI[ 'Fixed Payments results meet requirements' ]()
+    })
+})
+// 10.
+describe ( 'Enter an invalid set of inputs with either tab selected and click Calculate to produce error message(s).', () => {
+    it ( 'Error message(s) should replace the result section and error text should be highlighted in the appropriate color.', async () => {
+        await Confirm.UI[ 'Error replaces results section. Error text meets requirements' ]()
+    })
+})
