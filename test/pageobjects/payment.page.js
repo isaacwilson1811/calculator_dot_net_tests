@@ -55,7 +55,7 @@ class Payment extends BasePage {
             count++
         }
     }
-
+    // Testing methods
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
@@ -284,10 +284,72 @@ class Payment extends BasePage {
             await this.assertColor(this.buttonFixPay, {expectedColor: '#000000', type:'text', colorFormat: 'hex'})
             await this.assertColor(this.buttonFixPay, {expectedColor: '#eeeeee', type:'background', colorFormat: 'hex'})
         },
-        'Fixed Payment mode inputs': async () => {
-            await this.assertExists()
-            // 
-        }
+        'After clicking Fixed Payments. Fixed Payment mode inputs are visible, and Fixed Term inputs are hidden': async () => {
+            await this.buttonFixPay.click()
+            await expect(this.inputLoanTerm).not.toBeDisplayed()
+            await expect($('//td[contains(text(),"Loan Term")]')).not.toBeDisplayed()
+            await expect(this.inputMonthlyPay).toBeDisplayed()
+            await expect($('//td[contains(text(),"Monthly Pay")]')).toBeDisplayed()
+        },
+        'Fixed Term button meets hover and active requirements': async () => {
+            // inactive state
+            await this.assertColor(this.buttonFixTerm, {expectedColor: '#ffffff', type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixTerm, {expectedColor: '#336699', type:'background', colorFormat: 'hex'})
+            // hover state
+            await this.assertHoverEffectBGC(this.buttonFixTerm,{
+                expectedBGColorOnHover: '#eeeeee'
+            })
+            // click
+            await this.buttonFixTerm.click()
+            // active state
+            await this.assertColor(this.buttonFixTerm, {expectedColor: '#000000', type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixTerm, {expectedColor: '#eeeeee', type:'background', colorFormat: 'hex'})
+        },
+        'After clicking Fixed Term. Fixed Term mode inputs are visible, and Fixed Payments inputs are hidden': async () => {
+            await this.buttonFixTerm.click()
+            await expect(this.inputMonthlyPay).not.toBeDisplayed()
+            await expect($('//td[contains(text(),"Monthly Pay")]')).not.toBeDisplayed()
+            await expect(this.inputLoanTerm).toBeDisplayed()
+            await expect($('//td[contains(text(),"Loan Term")]')).toBeDisplayed()
+        },
+        'Result section is placed to the right of inputs': async () => {
+            await this.assertOrderInDOM({
+                elementFirst: this.inputContainer,
+                elementSecond: $('//div[@class="rightresult"]')
+            })
+        },
+        'Results heading meets requirments': async () => {
+            await expect(this.resultHeader).toBeDisplayed()
+            await this.assertText(this.resultHeader,{expectedText: expect.stringContaining('Monthly Payment:')})
+        },
+        'Results text meest requirements': async () => {
+            await expect(this.resultText).toBeDisplayed()
+            await this.assertText(this.resultText,{expectedText: expect.stringContaining('You will need to pay $')})
+        },
+        'Result table meets requirements': async () => {
+            await this.verifyResults({
+                mode: 'Fixed Term',
+                header: expect.stringContaining('Monthly Payment:'),
+                body: expect.stringContaining('You will need to pay'),
+                tableData: ['Total of 180 Payments',expect.stringContaining('$'),'Total Interest',expect.stringContaining('$')]
+            })
+        },
+        'Valid inputs update results': async () => {
+            await this.calculate({
+                mode: 'Fixed Term',
+                loanTerm: '15',
+                loanAmount: '200,000',
+                interestRate: '6'
+            })
+            await this.verifyResults({
+                mode: 'Fixed Term',
+                header: 'Monthly Payment:   $1,687.71',
+                body: 'You will need to pay $1,687.71 every month for 15 years to payoff the debt.',
+                tableData: ['Total of 180 Payments','$303,788.46','Total Interest','$103,788.46']
+            })
+        },
+        // assert this is not visible but make it select text containing the actual text
+        // $('(//div[@id="content"]/p)[1]')
     }
 }
 

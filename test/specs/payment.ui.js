@@ -58,26 +58,42 @@ describe ( 'Hover over, then click Fixed Payments tab', () => {
         await Confirm.UI[ 'Fixed Payment button meets hover and active requirements' ]()
     })
     it ( 'After Clicked: Loan Term label and input are replaced with Monthly Pay label and input with dollar symbol on the left.', async () => {
-        // wip
+        await Confirm.UI[ 'After clicking Fixed Payments. Fixed Payment mode inputs are visible, and Fixed Term inputs are hidden' ]()
     })
 })
-// // 6.
-// describe ( 'Hover over, then click Fixed Term tab', () => {
-//     it ( 'Fixed Term tab has an inactive, hover, and active state.', async () => {})
-//     it ( 'After Clicked: Monthly Pay label and input are replaced with Loan Term from step 4.', async () => {})
-// })
-// // 7.
-// describe ( 'Monthly Payment Result section', () => {
-//     it ( 'Payment results section is displayed to the right side of input container:', async () => {})
-//     it ( 'h2 heading element with text ‘Monthly Payment: $____ and appropriate text / background color applied.', async () => {})
-//     it ( 'Text paragraph displaying “You will need to pay $_ every month for _ years/months to payoff the debt.”', async () => {})
-//     it ( '2x2 Table displaying Total of __ Payments, dollar amount, Total Interest, dollar amount. Table rows alternate background color and have cell borders applied.', async () => {})
-// })
+// 6.
+describe ( 'Hover over, then click Fixed Term tab', () => {
+    it ( 'Fixed Term tab has an inactive, hover, and active state.', async () => {
+        await Confirm.UI[ 'Fixed Term button meets hover and active requirements' ]()
+    })
+    it ( 'After Clicked: Monthly Pay label and input are replaced with Loan Term from step 4.', async () => {
+        await Confirm.UI[ 'After clicking Fixed Term. Fixed Term mode inputs are visible, and Fixed Payments inputs are hidden' ]()
+    })
+})
+// 7.
+describe ( 'Result section', () => {
+    it ( 'Payment results section is displayed to the right side of input container:', async () => {
+        await Confirm.UI[ 'Result section is placed to the right of inputs' ]()
+    })
+    it ( 'h2 heading element with text "Monthly Payment: $..." and appropriate text / background color applied.', async () => {
+        await Confirm.UI['Results heading meets requirments']()
+    })
+    it ( 'Text paragraph displaying “You will need to pay $...”', async () => {
+        await Confirm.UI[ 'Results text meest requirements' ]()
+    })
+    it ( '2x2 Table displaying Total of __ Payments, dollar amount, Total Interest, dollar amount. Table rows alternate background color and have cell borders applied.', async () => {
+        await Confirm.UI['Result table meets requirements']()
+    })
+})
 // // 8.
-// describe ( 'Enter a valid set of inputs with Fixed Term tab selected and click Calculate.', () => {
-//     it ( 'The description paragraph from step 2 disappears.', async () => {})
-//     it ( 'The values in the payment results are updated.', async () => {})
-// })
+describe ( 'Enter a valid set of inputs with Fixed Term tab selected and click Calculate.', () => {
+    it ( 'The values in the payment results are updated.', async () => {
+        Confirm.UI[ 'Valid inputs update results' ]()
+    })
+    it ( 'The description paragraph from step 2 disappears.', async () => {
+
+    })
+})
 // // 9.
 // describe ( 'Enter a valid set of inputs with Fixed Payments tab selected and click Calculate.', () => {
 //     it ( 'Monthly Payment Heading text is replaced with “Payoff: _ years _ months“', async () => {})
