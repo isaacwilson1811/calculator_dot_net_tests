@@ -76,15 +76,14 @@ export default class BasePage {
 
     async assertCSSBorder (element, {expectedColor, expectedWidth, expectedStyle}) {
         const edges = ['top','left','bottom','right']
-        edges.forEach( async (edge) => {
+        for (const edge of edges) {
             const edgeWidth = await element.getCSSProperty(`border-${edge}-width`)
             const edgeStyle = await element.getCSSProperty(`border-${edge}-style`)
             const edgeColor = await element.getCSSProperty(`border-${edge}-color`)
             await expect(edgeWidth.parsed.string).toBe(expectedWidth)
             await expect(edgeStyle.parsed.string).toBe(expectedStyle)
             await expect(edgeColor.parsed.hex).toBe(expectedColor)
-        })
-        
+        }
     }
     
     async assertCSSPropertyValue (element, {property, expectedValue}) {
@@ -105,9 +104,12 @@ export default class BasePage {
     }
     
     async assertHoverEffectBGC (element, { expectedBGColorOnHover }) {
-        await element.moveTo({ xOffset: -10, yOffset: 2})
-        await element.moveTo({ xOffset: 10, yOffset: -2})
-        await element.moveTo({ xOffset: -4, yOffset: 4})
+        // Wiggle mouse over element for a brief moment to make background color assertion more reliable.
+        await element.moveTo({ xOffset: 0, yOffset: 1})
+        await element.moveTo({ xOffset: 1, yOffset: 0})
+        await element.moveTo({ xOffset: -2, yOffset: 0})
+        await element.moveTo({ xOffset: 2, yOffset: -2})
+        await element.moveTo({ xOffset: -2, yOffset: 2})
         await element.moveTo({ xOffset: 0, yOffset: 0})
         await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColorOnHover})
     }
