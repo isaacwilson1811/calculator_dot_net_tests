@@ -348,8 +348,44 @@ class Payment extends BasePage {
                 tableData: ['Total of 180 Payments','$303,788.46','Total Interest','$103,788.46']
             })
         },
-        // assert this is not visible but make it select text containing the actual text
-        // $('(//div[@id="content"]/p)[1]')
+        'Description paragraph is no longer on the page': async () => {
+            await expect($('(//div[@id="content"]/p)[1][contains(text(),"The Payment Calculator can determine")]')).not.toBeExisting()
+        },
+        'Fixed Payments results meet requirements': async () => {
+            await this.buttonFixPay.click()
+            await this.calculate({
+                mode: 'Fixed Payments',
+                monthlyPay: '1',
+                loanAmount: '1',
+                interestRate: '0'
+            })
+            await this.verifyResults({
+                mode: 'Fixed Payments',
+                header: expect.stringContaining('Payoff:'),
+                body: expect.stringContaining('month'),
+                tableData: [
+                    'Time Required to Clear Debt',
+                    expect.stringContaining('years'),
+                    expect.stringContaining('Total'),
+                    expect.stringContaining('$'),
+                    'Total Interest',
+                    expect.stringContaining('$')
+                ]
+            })
+        },
+        'Error replaces results section. Error text meets requirements': async () => {
+            await this.calculate({
+                mode: 'Fixed Payments',
+                monthlyPay: '',
+                loanAmount: '',
+                interestRate: ''
+            })
+            await expect(this.resultHeader).not.toBeDisplayed()
+            await this.assertAttributeValue(this.errorMessages[0],{
+                attribute: 'color',
+                expectedValue: 'red'
+            })
+        }
     }
 }
 
