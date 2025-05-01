@@ -25,6 +25,6 @@ describe ( 'Calculate with values: Salary ($11) per [Hour], Hours(45), Days(6), 
 // 3.
 describe ( 'After entering any values Click Clear button', () => {
     it ( 'Inputs should be empty.', async () => {
-        await Confirm.CALCULATE[ 'Inputs are empty after clicking Clear' ]()
+        await Confirm.CLEAR[ 'Inputs are empty after clicking Clear button' ]()
     })
 })

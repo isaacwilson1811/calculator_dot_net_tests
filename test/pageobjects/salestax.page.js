@@ -5,7 +5,7 @@ import GUI from '../requirements/GUI.js'
 class SalesTax extends BasePage {
     endpoint = 'sales-tax-calculator.html'
     
-    // Required Component Text Values
+    // Required Text Values
     requiredText = {
         title: GUI['Design Requirements'].language.approvedApps.appID34534535.title,
         description: GUI['Design Requirements'].language.approvedApps.appID34534535.description,
@@ -35,7 +35,7 @@ class SalesTax extends BasePage {
     get errorMessage () { return $('//font[@color="red"]') }
     get errorMessages () { return $$('//font[@color="red"]') }
 
-    // Main component function
+    // Component functions
     async calculate ({beforeTax, taxRate, afterTax}) {
         beforeTax ? await this.inputBeforeTax.setValue(beforeTax) : await this.inputBeforeTax.setValue('')
         taxRate ? await this.inputTaxRate.setValue(taxRate) : await this.inputTaxRate.setValue('')
@@ -68,7 +68,7 @@ class SalesTax extends BasePage {
         }
     }
 
-    // Test Spec Logic
+    // Test logic
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
@@ -160,6 +160,13 @@ class SalesTax extends BasePage {
             ])
         }
     }
+    CLEAR = {
+        'Inputs are empty after clicking Clear button': async () => {
+            await this.calculate({beforeTax:'1',taxRate:'1',afterTax:'1'})
+            await this.buttonClear.click()
+            await this.verifyInputsClear()
+        }
+    }
     ERROR = {
         'Invalid inputs produced an error message': async () => {
             await this.buttonClear.click()
@@ -201,13 +208,6 @@ class SalesTax extends BasePage {
                 'Please provide a valid sales tax rate.',
                 'Please provide a valid after tax price.'
             ])
-        }
-    }
-    CLEAR = {
-        'Inputs are empty after clicking Clear button': async () => {
-            await this.calculate({beforeTax:'1',taxRate:'1',afterTax:'1'})
-            await this.buttonClear.click()
-            await this.verifyInputsClear()
         }
     }
     UI = {

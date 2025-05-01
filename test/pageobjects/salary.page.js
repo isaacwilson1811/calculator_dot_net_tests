@@ -5,14 +5,14 @@ import GUI from '../requirements/GUI.js'
 class Salary extends BasePage {
     endpoint = 'salary-calculator.html'
 
-    // Use properties from the Design Requirements to validate in UI Test
-    // Approved Text Content from Design Requirements
+    // Required Text Values
     requiredText = {
         title: GUI['Design Requirements'].language.approvedApps.appID5553235.title,
         description: GUI['Design Requirements'].language.approvedApps.appID5553235.description,
         inputLabels: GUI['Design Requirements'].language.approvedApps.appID5553235.inputLabels,
         outputLabels: GUI['Design Requirements'].language.approvedApps.appID5553235.outputLabels
     }
+
     expectedUnitOptions = [
         {value: 'Hourly', text: 'Hour'},
         {value: 'Daily', text: 'Day'},
@@ -24,7 +24,7 @@ class Salary extends BasePage {
         {value: 'Annual', text: 'Year'}
     ]
 
-    // Define getters to return selectors
+    // Element Selectors
     get componentHeading () { return $('//h1') }
     get componentDescriptionParagraph () { return $('(//div[@id="content"]/p)[1]') }
     get arrayOfComponentHeading () { return $$('//h1') }
@@ -47,7 +47,7 @@ class Salary extends BasePage {
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
 
-    // Main Component function
+    // Component function
     async calculate ({salaryAmount, perUnit, hours, days, holidays, vacation}) {
         await this.inputSalaryAmount.setValue(salaryAmount)
         await this.unitSelect.selectByAttribute('value', perUnit)
@@ -86,50 +86,13 @@ class Salary extends BasePage {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
-    // Test Spec Logic
+    // Test logic
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
         }
     }
-    ERROR = {
-        'Blank values and random unit choice produce required errors': async () => {
-            const randomOption = this.getRandomNumber(1,7)
-            const option = this.expectedUnitOptions[randomOption].value
-            await this.calculate({
-                salaryAmount: '', perUnit: option,
-                hours: '', days: '', holidays: '', vacation: ''
-            })
-            await this.verifyErrors([
-                'Please provide a positive salary amount.',
-                'Please provide a positive hours per week value.',
-                'Please provide a positive days per week value.',
-                'Please provide a positive holidays per year value.',
-                'Please provide a positive vacation days per year value.'
-            ])
-        },
-        'Holidays and Vacation over the limit results in specific error': async () => {
-            const randomOption = this.getRandomNumber(1,7)
-            const option = this.expectedUnitOptions[randomOption].value
-            await this.calculate({
-                salaryAmount: '1', perUnit: option,
-                hours: '1', days: '1', holidays: '365', vacation: '365'
-            })
-            await this.verifyErrors([
-                'The number of holidays and vacation days are out of range for this calculator!'
-            ])
-        }
-    }
     CALCULATE = {
-        'Inputs are empty after clicking Clear': async () => {
-            await this.inputSalaryAmount.setValue('100')
-            await this.inputHoursPerWeek.setValue('100')
-            await this.inputDaysPerWeek.setValue('100')
-            await this.inputHolidaysPerYear.setValue('100')
-            await this.inputVacationDaysPerYear.setValue('100')
-            await this.buttonClear.click()
-            await this.verifyInputsClear()
-        },
         'Positive test sample 1': async () => {
             await this.calculate({
                 salaryAmount: '80000', perUnit: 'Annual',
@@ -236,6 +199,45 @@ class Salary extends BasePage {
                 )
                 count++
             }
+        }
+    }
+    CLEAR = {
+        'Inputs are empty after clicking Clear button': async () => {
+            await this.inputSalaryAmount.setValue('100')
+            await this.inputHoursPerWeek.setValue('100')
+            await this.inputDaysPerWeek.setValue('100')
+            await this.inputHolidaysPerYear.setValue('100')
+            await this.inputVacationDaysPerYear.setValue('100')
+            await this.buttonClear.click()
+            await this.verifyInputsClear()
+        }
+    }
+    ERROR = {
+        'Blank values and random unit choice produce required errors': async () => {
+            const randomOption = this.getRandomNumber(1,7)
+            const option = this.expectedUnitOptions[randomOption].value
+            await this.calculate({
+                salaryAmount: '', perUnit: option,
+                hours: '', days: '', holidays: '', vacation: ''
+            })
+            await this.verifyErrors([
+                'Please provide a positive salary amount.',
+                'Please provide a positive hours per week value.',
+                'Please provide a positive days per week value.',
+                'Please provide a positive holidays per year value.',
+                'Please provide a positive vacation days per year value.'
+            ])
+        },
+        'Holidays and Vacation over the limit results in specific error': async () => {
+            const randomOption = this.getRandomNumber(1,7)
+            const option = this.expectedUnitOptions[randomOption].value
+            await this.calculate({
+                salaryAmount: '1', perUnit: option,
+                hours: '1', days: '1', holidays: '365', vacation: '365'
+            })
+            await this.verifyErrors([
+                'The number of holidays and vacation days are out of range for this calculator!'
+            ])
         }
     }
     UI = {
@@ -429,9 +431,7 @@ class Salary extends BasePage {
             const font = this.errorSection.$('//div/font')
             await this.assertAttributeValue(font, {attribute: 'color', expectedValue: 'red'})
         }
-    }
-
-    
+    }    
 }
 
 export default new Salary();

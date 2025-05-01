@@ -4,6 +4,7 @@ import BasePage from './basepage.js'
 class Payment extends BasePage {
     endpoint = 'payment-calculator.html'
 
+    // Element Selectors
     get componentHeading () { return $('//h1') }
     get arrayOfComponentHeading () { return $$('//h1') }
     get componentDescriptionParagraph () { return $('(//div[@id="content"]/p)[1]') }
@@ -23,6 +24,7 @@ class Payment extends BasePage {
     get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
     get inputContainer () { return $('//div[@class="panel2"]/table') }
 
+    // Component functions
     async calculate ({mode, loanTerm, monthlyPay, loanAmount, interestRate}) {
         if (mode == 'Fixed Term'){
             await this.buttonFixTerm.click()
@@ -55,40 +57,12 @@ class Payment extends BasePage {
             count++
         }
     }
-    // Testing methods
+
+    // Test logic
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
         }
-    }
-    ERROR = {
-        'Fixed Term and all -1 values produces specific errors': async () => {
-            await this.calculate({
-                mode: 'Fixed Term',
-                loanTerm: '-1',
-                loanAmount: '-1',
-                interestRate: '-1'
-            })
-            await this.verifyErrors([
-                'Please provide a positive loan amount value.',
-                'Please provide a positive interest rate value.',
-                'Please provide a positive loan term value.'
-            ])
-        },
-        'Fixed Payments and all -1 values produces specific errors': async () => {
-            await this.calculate({
-                mode: 'Fixed Payments',
-                monthlyPay: '-1',
-                loanAmount: '-1',
-                interestRate: '-1'
-            })
-            await this.verifyErrors([
-                'Please provide a positive loan amount value.',
-                'Please provide a positive interest rate value.',
-                'Please provide a positive monthly pay amount value.'
-            ])
-        }
-
     }
     CALCULATE = {
         'Positive test sample 1': async () => {
@@ -174,10 +148,10 @@ class Payment extends BasePage {
                 body: 'You will need to pay $8,250,000,001.00 every month for 24 years 0.04 months to payoff the debt.',
                 tableData: ['Time Required to Clear Debt','24.00 years','Total of 288.04 Payments','$2,376,291,677,694.53','Total Interest','$2,276,291,677,694.53']
             })
-        },
+        }
     }
     CLEAR = {
-        'Inputs empty after clicking Clear Button': async () => {
+        'Inputs are empty after clicking Clear button': async () => {
             await this.buttonFixTerm.click()
             await this.inputLoanTerm.setValue('10')
             await this.buttonFixPay.click()
@@ -190,6 +164,34 @@ class Payment extends BasePage {
             await this.assertText(this.inputLoanTerm, {expectedText: ''})
             await this.assertText(this.inputLoanAmount, {expectedText: ''})
             await this.assertText(this.inputInterestRate, {expectedText: ''})
+        }
+    }
+    ERROR = {
+        'Fixed Term and all -1 values produces specific errors': async () => {
+            await this.calculate({
+                mode: 'Fixed Term',
+                loanTerm: '-1',
+                loanAmount: '-1',
+                interestRate: '-1'
+            })
+            await this.verifyErrors([
+                'Please provide a positive loan amount value.',
+                'Please provide a positive interest rate value.',
+                'Please provide a positive loan term value.'
+            ])
+        },
+        'Fixed Payments and all -1 values produces specific errors': async () => {
+            await this.calculate({
+                mode: 'Fixed Payments',
+                monthlyPay: '-1',
+                loanAmount: '-1',
+                interestRate: '-1'
+            })
+            await this.verifyErrors([
+                'Please provide a positive loan amount value.',
+                'Please provide a positive interest rate value.',
+                'Please provide a positive monthly pay amount value.'
+            ])
         }
     }
     UI = {

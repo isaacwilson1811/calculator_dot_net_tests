@@ -3,6 +3,7 @@ import BasePage from './basepage.js';
 
 class CompoundInterest extends BasePage {
     endpoint = 'compound-interest-calculator.html'
+    
     // Element Selectors
     get componentHeading () { return $('//h1') }
     get componentDescription () { return $('(//div[@id="content"]/p)[1]') }
@@ -23,6 +24,7 @@ class CompoundInterest extends BasePage {
 
     selectCompoundValues = [ 'annually', 'semiannually', 'quarterly', 'monthly', 'semimonthly', 'biweekly', 'weekly', 'daily', 'continuously']
     
+    // Component functions
     async calculate ({interestRate, inCompound, outCompound}) {
         await this.inputInterestRate.setValue(interestRate)
         await this.selectInCompound.selectByAttribute('value', inCompound)
@@ -37,24 +39,10 @@ class CompoundInterest extends BasePage {
         await this.assertText(this.inputInterestRate,{expectedText: ''})
     }
 
+    // Test logic
     BROWSER = {
         'Component page is loaded': async () => {
             await this.openComponentPage(this.endpoint)
-        }
-    }
-    ERROR = {
-        'Error displayed when no input is calculated': async () => {
-            await this.calculate({interestRate: '', inCompound: 'daily', outCompound: 'semimonthly'})
-            await expect(this.errorSection).toBeExisting()
-            await this.assertText(this.errorMessage,{expectedText:'Please provide a numeric input interest rate.'})
-            await this.assertAttributeValue(this.errorMessage,{
-                attribute: 'color',
-                expectedValue: 'red'
-            })
-        },
-        'Output Interest is displayed as ?%': async () => {
-            await this.calculate({interestRate: 'wrong type', inCompound: 'quarterly', outCompound: 'monthly'})
-            await this.assertText(this.outPutInterest,{expectedText: '?%'})
         }
     }
     CALCULATE = {
@@ -71,11 +59,6 @@ class CompoundInterest extends BasePage {
                 text:'1.12% compound daily is equivalent to 1.12024% compound semimonthly or 0.04668% interest every half a month.',
                 output:'1.12024%'
             })
-        },
-        'Inputs empty after clicking Clear Button': async () => {
-            await this.inputInterestRate.setValue('100')
-            await this.buttonClear.click()
-            await this.verifyInputsClear()
         },
         'All combinations of min value calculate the same output value of 0': async () => {
             const array = this.selectCompoundValues
@@ -115,6 +98,28 @@ class CompoundInterest extends BasePage {
                     calcCount++
                 }
             }
+        }
+    }
+    CLEAR = {
+        'Inputs are empty after clicking Clear button': async () => {
+            await this.inputInterestRate.setValue('100')
+            await this.buttonClear.click()
+            await this.verifyInputsClear()
+        }
+    }
+    ERROR = {
+        'Error displayed when no input is calculated': async () => {
+            await this.calculate({interestRate: '', inCompound: 'daily', outCompound: 'semimonthly'})
+            await expect(this.errorSection).toBeExisting()
+            await this.assertText(this.errorMessage,{expectedText:'Please provide a numeric input interest rate.'})
+            await this.assertAttributeValue(this.errorMessage,{
+                attribute: 'color',
+                expectedValue: 'red'
+            })
+        },
+        'Output Interest is displayed as ?%': async () => {
+            await this.calculate({interestRate: 'wrong type', inCompound: 'quarterly', outCompound: 'monthly'})
+            await this.assertText(this.outPutInterest,{expectedText: '?%'})
         }
     }
     UI = {

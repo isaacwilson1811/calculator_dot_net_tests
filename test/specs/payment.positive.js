@@ -25,6 +25,6 @@ describe ( 'Calculate with values: Fixed Payments, Monthly Pay(38), Loan Amount(
 // 3.
 describe ( 'Enter any values and click Clear Button', () => {
     it ( 'Inputs should be empty', async () => {
-        await Confirm.CLEAR[ 'Inputs empty after clicking Clear Button' ]()
+        await Confirm.CLEAR[ 'Inputs are empty after clicking Clear button' ]()
     })
 })

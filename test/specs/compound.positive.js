@@ -25,6 +25,6 @@ describe ( 'Calculate with values: Interest(1.12%), [Daily] - [Semimonthly]', ()
 // 3.
 describe ( 'Enter any values and click Clear', () => {
     it ( 'All values are cleared and empty.', async () => {
-        await Confirm.CALCULATE[ 'Inputs empty after clicking Clear Button' ]()
+        await Confirm.CLEAR[ 'Inputs are empty after clicking Clear button' ]()
     })
 })
