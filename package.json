@@ -8,11 +8,14 @@
     "@wdio/spec-reporter": "^9.12.3"
   },
   "scripts": {
-    "wdio": "wdio run ./wdio.conf.js",
-    "all": "wdio run ./wdio.conf.js",
+    "all": "npx wdio run ./wdio.conf.js",
     "salestax": "npx wdio run ./wdio.conf.js --spec \"salestax.ui.js\" \"salestax.iobound.js\" \"salestax.error.js\" \"salestax.positive.js\"",
     "salary": "npx wdio run ./wdio.conf.js --spec \"salary.ui.js\" \"salary.iobound.js\" \"salary.error.js\" \"salary.positive.js\"",
     "payment": "npx wdio run ./wdio.conf.js --spec \"payment.ui.js\" \"payment.iobound.js\" \"payment.error.js\" \"payment.positive.js\"",
-    "compound": "npx wdio run ./wdio.conf.js --spec \"compound.ui.js\" \"compound.iobound.js\" \"compound.error.js\" \"compound.positive.js\""
+    "compound": "npx wdio run ./wdio.conf.js --spec \"compound.ui.js\" \"compound.iobound.js\" \"compound.error.js\" \"compound.positive.js\"",
+    "ui": "npx wdio run ./wdio.conf.js --spec \"salestax.ui.js\" \"salary.ui.js\" \"payment.ui.js\" \"compound.ui.js\"",
+    "iobound": "npx wdio run ./wdio.conf.js --spec \"salestax.iobound.js\" \"salary.iobound.js\" \"compound.iobound.js\" \"payment.iobound.js\"",
+    "error": "npx wdio run ./wdio.conf.js --spec \"salestax.error.js\" \"salary.error.js\" \"compound.error.js\" \"payment.error.js\"",
+    "positive": "npx wdio run ./wdio.conf.js --spec \"salestax.positive.js\" \"salary.positive.js\" \"payment.positive.js\" \"compound.positive.js\""
   }
 }
