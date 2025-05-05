@@ -39,20 +39,8 @@ class GUI {
             }
         },
         language: {
-            approvedApps: {
-                appID34534535: {
-                    title: 'Sales Tax Calculator',
-                    description: 'The Sales Tax Calculator can compute any one of the following, given inputs for the remaining two: before-tax price, sale tax rate, and final, or after-tax price.',
-                    inputLabels: ['Before Tax Price', 'Sales Tax Rate', 'After Tax Price', 'Calculate', 'Clear'],
-                    outputLabels: ['Result']
-                },
-                appID5553235: {
-                    title: 'Salary Calculator',
-                    description: 'The Salary Calculator converts salary amounts to their corresponding values based on payment frequency. Examples of payment frequencies include biweekly, semi-monthly, or monthly payments. Results include unadjusted figures and adjusted figures that account for vacation days and holidays per year.',
-                    inputLabels: ['Calculate', 'Clear'],
-                    outputLabels: ['Result']
-                }
-            }
+            buttonLabels: { Calc: 'Calculate', Clr: 'Clear' },
+            output: 'Result'
         },
         semantics: {
             elementLimits: {h1: 1}

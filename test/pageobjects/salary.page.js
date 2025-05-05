@@ -1,18 +1,15 @@
 import { $, expect } from '@wdio/globals'
 import BasePage from './basepage.js'
-import GUI from '../requirements/GUI.js'
 
 class Salary extends BasePage {
+    // Component Page
     endpoint = 'salary-calculator.html'
-
     // Required Text Values
     requiredText = {
-        title: GUI['Design Requirements'].language.approvedApps.appID5553235.title,
-        description: GUI['Design Requirements'].language.approvedApps.appID5553235.description,
-        inputLabels: GUI['Design Requirements'].language.approvedApps.appID5553235.inputLabels,
-        outputLabels: GUI['Design Requirements'].language.approvedApps.appID5553235.outputLabels
+        title: 'Salary Calculator',
+        description: 'The Salary Calculator converts salary amounts to their corresponding values based on payment frequency. Examples of payment frequencies include biweekly, semi-monthly, or monthly payments. Results include unadjusted figures and adjusted figures that account for vacation days and holidays per year.',
+        additionalInfo: 'This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed to be holidays and vacation days adjusted values. This calculator also assumes 52 working weeks or 260 weekdays per year in its calculations. The unadjusted results ignore the holidays and paid vacation days.'
     }
-
     expectedUnitOptions = [
         {value: 'Hourly', text: 'Hour'},
         {value: 'Daily', text: 'Day'},
@@ -23,7 +20,6 @@ class Salary extends BasePage {
         {value: 'Quarterly', text: 'Quarter'},
         {value: 'Annual', text: 'Year'}
     ]
-
     // Element Selectors
     get componentHeading () { return $('//h1') }
     get componentDescriptionParagraph () { return $('(//div[@id="content"]/p)[1]') }
@@ -47,7 +43,7 @@ class Salary extends BasePage {
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
 
-    // Component function
+    // Component functions
     async calculate ({salaryAmount, perUnit, hours, days, holidays, vacation}) {
         await this.inputSalaryAmount.setValue(salaryAmount)
         await this.unitSelect.selectByAttribute('value', perUnit)
@@ -311,7 +307,7 @@ class Salary extends BasePage {
             const button = this.buttonCalculate
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
-                expectedValue: 'Calculate'
+                expectedValue: this.requiredButtonLabels.Calc
             })
             await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4]})
             await this.assertBackgroundImage ( button, {
@@ -323,7 +319,7 @@ class Salary extends BasePage {
             const button = this.buttonClear
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
-                expectedValue: 'Clear'
+                expectedValue: this.requiredButtonLabels.Clr
             })
             await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4] })
         },
@@ -332,7 +328,7 @@ class Salary extends BasePage {
         },
         'Result Heading meets requirements': async () => {
             const heading = this.resultHeading
-            await this.assertText ( heading, { expectedText: 'Result' })
+            await this.assertText ( heading, { expectedText: this.requiredOutputLabels.Res })
             await this.assertColor ( heading, {
                 type: 'text', colorFormat: 'hex',
                 expectedColor: this.requiredColorsFunctional.important
@@ -398,7 +394,7 @@ class Salary extends BasePage {
         'Additional information text meets text content requirements': async () => {
             const paragraph = $('//p[contains(text(),"This salary calculator assumes")]')
             await this.assertText(paragraph,{
-                expectedText: "This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed to be holidays and vacation days adjusted values. This calculator also assumes 52 working weeks or 260 weekdays per year in its calculations. The unadjusted results ignore the holidays and paid vacation days."
+                expectedText: this.requiredText.additionalInfo
             })
         },
         'Calculating hides the description text': async () => {

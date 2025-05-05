@@ -1,18 +1,15 @@
 import { $ } from '@wdio/globals'
 import BasePage from './basepage.js'
-import GUI from '../requirements/GUI.js'
 
 class SalesTax extends BasePage {
+    // Component Page
     endpoint = 'sales-tax-calculator.html'
-    
     // Required Text Values
     requiredText = {
-        title: GUI['Design Requirements'].language.approvedApps.appID34534535.title,
-        description: GUI['Design Requirements'].language.approvedApps.appID34534535.description,
-        inputLabels: GUI['Design Requirements'].language.approvedApps.appID34534535.inputLabels,
-        outputLabels: GUI['Design Requirements'].language.approvedApps.appID34534535.outputLabels
+        title: 'Sales Tax Calculator',
+        description: 'The Sales Tax Calculator can compute any one of the following, given inputs for the remaining two: before-tax price, sale tax rate, and final, or after-tax price.',
+        inputLabels: { BT: 'Before Tax Price', TR: 'Sales Tax Rate', AT: 'After Tax Price' }
     }
-
     // Element Selectors
     get inputPanel () { return $('//div[@class="panel"]') }
     get inputPanelTable () { return $('//div[@class="panel"]/table') }
@@ -252,7 +249,7 @@ class SalesTax extends BasePage {
         },
         'Before Tax Price input and label meet requirements': async () => {
             await this.assertText ( this.inputBeforeTaxLabel, {
-                expectedText: this.requiredText.inputLabels[0]
+                expectedText: this.requiredText.inputLabels.BT
             })
             await this.assertBackgroundImage ( this.inputBeforeTax, {
                 expectedImageURL: this.requiredSymbols[1],
@@ -261,7 +258,7 @@ class SalesTax extends BasePage {
         },
         'Sales Tax Rate input and label meet requirements': async () => {
             await this.assertText ( this.inputTaxRateLabel, {
-                expectedText: this.requiredText.inputLabels[1]
+                expectedText: this.requiredText.inputLabels.TR
             })
             await this.assertBackgroundImage ( this.inputTaxRate, { 
                 expectedImageURL: this.requiredSymbols[0],
@@ -270,7 +267,7 @@ class SalesTax extends BasePage {
         },
         'After Tax Price input and label meet requirements': async () => {
             await this.assertText ( this.inputAfterTaxLabel, {
-                expectedText: this.requiredText.inputLabels[2]
+                expectedText: this.requiredText.inputLabels.AT
             })
             await this.assertBackgroundImage ( this.inputAfterTax, {
                 expectedImageURL: this.requiredSymbols[1],
@@ -281,7 +278,7 @@ class SalesTax extends BasePage {
             const button = this.buttonCalculate
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
-                expectedValue: this.requiredText.inputLabels[3]
+                expectedValue: this.requiredButtonLabels.Calc
             })
             await this.assertHoverEffectBGC ( button, {
                 expectedBGColorOnHover: this.requiredColors[4]
@@ -295,7 +292,7 @@ class SalesTax extends BasePage {
             const button = this.buttonClear
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
-                expectedValue: this.requiredText.inputLabels[4]
+                expectedValue: this.requiredButtonLabels.Clr
             })
             await this.assertHoverEffectBGC ( button, {
                 expectedBGColor: this.requiredColors[5],
@@ -305,7 +302,7 @@ class SalesTax extends BasePage {
         'Result Heading meets requirements': async () => {
             const heading = this.resultHeading
             await this.assertText ( heading, {
-                expectedText: this.requiredText.outputLabels[0]
+                expectedText: this.requiredOutputLabels.Res
             })
             await this.assertColor ( heading, {
                 type: 'text', colorFormat: 'hex',

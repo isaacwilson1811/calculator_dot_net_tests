@@ -2,7 +2,14 @@ import { $, expect } from '@wdio/globals'
 import BasePage from './basepage.js';
 
 class CompoundInterest extends BasePage {
+    // Component Page
     endpoint = 'compound-interest-calculator.html'
+    // Required Text Values
+    requiredText = {
+        title: 'Compound Interest Calculator',
+        description: 'The Compound Interest Calculator below can be used to compare or convert the interest rates of different compounding periods. Please use our Interest Calculator to do actual calculations on compound interest.'
+    }
+    selectCompoundValues = [ 'annually', 'semiannually', 'quarterly', 'monthly', 'semimonthly', 'biweekly', 'weekly', 'daily', 'continuously']
     
     // Element Selectors
     get componentHeading () { return $('//h1') }
@@ -22,8 +29,6 @@ class CompoundInterest extends BasePage {
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessage () { return this.errorSection.$('//div/font') }
 
-    selectCompoundValues = [ 'annually', 'semiannually', 'quarterly', 'monthly', 'semimonthly', 'biweekly', 'weekly', 'daily', 'continuously']
-    
     // Component functions
     async calculate ({interestRate, inCompound, outCompound}) {
         await this.inputInterestRate.setValue(interestRate)
@@ -128,7 +133,7 @@ class CompoundInterest extends BasePage {
                 expectedLength: 1 
             })
             await this.assertText( this.componentHeading, {
-                expectedText: 'Compound Interest Calculator'
+                expectedText: this.requiredText.title
             })
             await this.assertColor( this.componentHeading, {
                 type: 'text', colorFormat: 'hex',
@@ -137,7 +142,7 @@ class CompoundInterest extends BasePage {
         },
         'Description element meets requirements': async () => {
             await this.assertText( this.componentDescription,{
-                expectedText: 'The Compound Interest Calculator below can be used to compare or convert the interest rates of different compounding periods. Please use our Interest Calculator to do actual calculations on compound interest.'
+                expectedText: this.requiredText.description
             })
         },
         'Instruction heading meets requirements': async () => {
@@ -187,7 +192,7 @@ class CompoundInterest extends BasePage {
             await this.assertText(this.outPutInterest, {expectedText: expect.stringContaining('%')})
             await this.assertAttributeValue(this.outPutInterestFont,{
                 attribute: 'color',
-                expectedValue: 'green'
+                expectedValue: this.requiredColorsFunctional.success
             })
         },
         'Compound 2 dropdown and Label meet requirements': async () => {
@@ -203,7 +208,7 @@ class CompoundInterest extends BasePage {
         },
         'Result Heading meets requirements': async () => {
             await this.assertText ( this.resultHeading, {
-                expectedText: 'Result'
+                expectedText: this.requiredOutputLabels.Res
             })
             await this.assertColor ( this.resultHeading, {
                 type: 'text', colorFormat: 'hex',

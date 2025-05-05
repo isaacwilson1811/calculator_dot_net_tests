@@ -2,8 +2,13 @@ import { $ } from '@wdio/globals'
 import BasePage from './basepage.js'
 
 class Payment extends BasePage {
+    // Component Page
     endpoint = 'payment-calculator.html'
-
+    // Required Text Values
+    requiredText = {
+        title: 'Payment Calculator',
+        description: 'The Payment Calculator can determine the monthly payment amount or loan term for a fixed interest loan. Use the "Fixed Term" tab to calculate the monthly payment of a fixed-term loan. Use the "Fixed Payments" tab to calculate the time to pay off a loan with a fixed monthly payment. For more information about or to do calculations specifically for car payments, please use the Auto Loan Calculator. To find net payment of salary after taxes and deductions, use the Take-Home-Pay Calculator.'
+    }
     // Element Selectors
     get componentHeading () { return $('//h1') }
     get arrayOfComponentHeading () { return $$('//h1') }
@@ -197,7 +202,7 @@ class Payment extends BasePage {
     UI = {
         'Component title heading meets requirements': async () => {
             await this.assertArrayLength( this.arrayOfComponentHeading, { expectedLength: 1 })
-            await this.assertText( this.componentHeading, { expectedText: 'Payment Calculator' })
+            await this.assertText( this.componentHeading, { expectedText: this.requiredText.title })
             await this.assertColor( this.componentHeading, {
                 type: 'text', colorFormat: 'hex',
                 expectedColor: this.requiredColors[0]
@@ -205,7 +210,7 @@ class Payment extends BasePage {
         },
         'Description element meets requirements': async () => {
             await this.assertText ( this.componentDescriptionParagraph, { 
-                expectedText: 'The Payment Calculator can determine the monthly payment amount or loan term for a fixed interest loan. Use the "Fixed Term" tab to calculate the monthly payment of a fixed-term loan. Use the "Fixed Payments" tab to calculate the time to pay off a loan with a fixed monthly payment. For more information about or to do calculations specifically for car payments, please use the Auto Loan Calculator. To find net payment of salary after taxes and deductions, use the Take-Home-Pay Calculator.'
+                expectedText: this.requiredText.description
             })
         },
         'Instruction heading meets requirements': async () => {
@@ -256,7 +261,7 @@ class Payment extends BasePage {
             const button = this.buttonCalculate
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
-                expectedValue: 'Calculate'
+                expectedValue: this.requiredButtonLabels.Calc
             })
             await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4]})
             await this.assertBackgroundImage ( button, {
@@ -268,7 +273,7 @@ class Payment extends BasePage {
             const button = this.buttonClear
             await this.assertAttributeValue ( button, {
                 attribute: 'value',
-                expectedValue: 'Clear'
+                expectedValue: this.requiredButtonLabels.Clr
             })
             await this.assertHoverEffectBGC ( button, { expectedBGColorOnHover: this.requiredColors[4] })
         },
@@ -385,7 +390,7 @@ class Payment extends BasePage {
             await expect(this.resultHeader).not.toBeDisplayed()
             await this.assertAttributeValue(this.errorMessages[0],{
                 attribute: 'color',
-                expectedValue: 'red'
+                expectedValue: this.requiredColorsFunctional.warning
             })
         }
     }

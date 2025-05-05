@@ -2,8 +2,11 @@ import { browser, expect } from '@wdio/globals'
 import GUI from '../requirements/GUI.js'
 
 export default class BasePage {
+    // Browser Navigation
     baseURL = 'https://calculator.net'
-
+    openComponentPage(endpoint) {
+        return browser.url(`${this.baseURL}/${endpoint}`)
+    }
     // Required values that are shared accross all page objects.
     requiredH1Limit = GUI['Design Requirements'].semantics.elementLimits.h1
     requiredLineProperties = [
@@ -29,31 +32,29 @@ export default class BasePage {
         success: GUI['Design Requirements'].visuals.approvedColors.functional.success,
         important: GUI['Design Requirements'].visuals.approvedColors.functional.important
     }
-
-    // Navigation
-    openComponentPage(endpoint) {
-        return browser.url(`${this.baseURL}/${endpoint}`)
+    requiredButtonLabels = { 
+        Calc: GUI['Design Requirements'].language.buttonLabels.Calc,
+        Clr: GUI['Design Requirements'].language.buttonLabels.Clr
+    }
+    requiredOutputLabels = { 
+        Res: GUI['Design Requirements'].language.output
     }
 
-    // Assertion
+    // Assertion Methods
     async assertExists (element) {
         await expect(element).toBeExisting()
     }
-
     async assertArrayLength (array, {expectedLength}) {
         const length = await array.length
         await expect(length).toBe(expectedLength)
     }
-
     async assertAttributeValue (element, {attribute, expectedValue}) {
         const attributeValue = await element.getAttribute(attribute)
         await expect(attributeValue).toBe(expectedValue)
     }
-
     async assertText (element, {expectedText}) {
         await expect(element).toHaveText(expectedText)
     }
-    
     async assertColor (element, {type, colorFormat, expectedColor}) {
         let property
         switch(type){
@@ -66,14 +67,12 @@ export default class BasePage {
             await expect(color.parsed.hex).toBe(expectedColor)
         } else { await expect(false).toBeTrue }
     }
-    
     async assertBackgroundImage (element, {expectedImageURL, expectedPosition}) {
         const imageURL = await element.getCSSProperty('background-image')
         const imagePosition = await element.getCSSProperty('background-position')
         await expect(imageURL.value).toBe(expectedImageURL)
         await expect(imagePosition.value).toBe(expectedPosition)
     }
-
     async assertCSSBorder (element, {expectedColor, expectedWidth, expectedStyle}) {
         const edges = ['top','left','bottom','right']
         for (const edge of edges) {
@@ -85,12 +84,10 @@ export default class BasePage {
             await expect(edgeColor.parsed.hex).toBe(expectedColor)
         }
     }
-    
     async assertCSSPropertyValue (element, {property, expectedValue}) {
         const elementCSSProperty = await element.getCSSProperty(property)
         await expect(elementCSSProperty.parsed.string).toBe(expectedValue)
     }
-    
     async assertOrderInDOM({elementFirst, elementSecond}) {
         const position = await browser.execute (
             (a,b) => {
@@ -102,15 +99,15 @@ export default class BasePage {
         )
         expect(position.indexA).toBeLessThan(position.indexB)
     }
-    
     async assertHoverEffectBGC (element, { expectedBGColorOnHover }) {
         // Wiggle mouse over element for a brief moment to make background color assertion more reliable.
+        await element.moveTo({ xOffset: 100, yOffset: 100})
         await element.moveTo({ xOffset: 0, yOffset: 1})
         await element.moveTo({ xOffset: 1, yOffset: 0})
-        await element.moveTo({ xOffset: -2, yOffset: 0})
-        await element.moveTo({ xOffset: 2, yOffset: -2})
-        await element.moveTo({ xOffset: -2, yOffset: 2})
-        await element.moveTo({ xOffset: 0, yOffset: 0})
+        await element.moveTo({ xOffset: 2, yOffset: 0})
+        await element.moveTo({ xOffset: 2, yOffset: 3})
+        await element.moveTo({ xOffset: 3, yOffset: 2})
+        await element.moveTo({ xOffset: 1, yOffset: 1})
         await this.assertColor(element, { type: 'background', colorFormat: 'hex', expectedColor: expectedBGColorOnHover})
     }
 }
