@@ -37,6 +37,7 @@ class CompoundInterest extends BasePage {
         await this.buttonCalculate.click()
     }
     async calcCombo ({interestRate, inCompoundOption, expectedResults}) {
+        await this.buttonClear.click()
         let calcCount = 0
         const array = this.selectCompoundValues
             for (let c2 = 0; c2 < array.length; c2++) {
