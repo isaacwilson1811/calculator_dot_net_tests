@@ -41,8 +41,17 @@ export default class BasePage {
     }
 
     // Assertion Methods
-    async assertExists (element) {
-        await expect(element).toBeExisting()
+    async assertExists (element, bool) {
+        switch(bool){
+            case false: await expect(element).not.toBeExisting(); break;
+            case true: default: await expect(element).toBeExisting()
+        }
+    }
+    async assertDisplayed (element, bool) {
+        switch(bool){
+            case false: await expect(element).not.toBeDisplayed(); break;
+            case true: default: await expect(element).toBeDisplayed()
+        }
     }
     async assertArrayLength (array, {expectedLength}) {
         const length = await array.length
