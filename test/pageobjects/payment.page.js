@@ -7,7 +7,8 @@ class Payment extends BasePage {
     // Required Text Values
     requiredText = {
         title: 'Payment Calculator',
-        description: 'The Payment Calculator can determine the monthly payment amount or loan term for a fixed interest loan. Use the "Fixed Term" tab to calculate the monthly payment of a fixed-term loan. Use the "Fixed Payments" tab to calculate the time to pay off a loan with a fixed monthly payment. For more information about or to do calculations specifically for car payments, please use the Auto Loan Calculator. To find net payment of salary after taxes and deductions, use the Take-Home-Pay Calculator.'
+        description: 'The Payment Calculator can determine the monthly payment amount or loan term for a fixed interest loan. Use the "Fixed Term" tab to calculate the monthly payment of a fixed-term loan. Use the "Fixed Payments" tab to calculate the time to pay off a loan with a fixed monthly payment. For more information about or to do calculations specifically for car payments, please use the Auto Loan Calculator. To find net payment of salary after taxes and deductions, use the Take-Home-Pay Calculator.',
+        inputLabels: { loanAmount: 'Loan Amount', loanTerm: 'Loan Term', monthlyPay: 'Monthly Pay' }
     }
     // Element Selectors
     get componentHeading () { return $('//h1') }
@@ -16,18 +17,23 @@ class Payment extends BasePage {
     get instructionHeadingImg () { return $('//div[@id="insmdc"]/img') }
     get buttonFixTerm () { return $('//a[@onclick="popNMenu(\'fixterm\',1);"]') }
     get inputLoanTerm () { return $('//input[@id="cloanterm"]') }
+    get inputLoanTermLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.loanTerm}")]`) }
     get buttonFixPay () { return $('//a[@onclick="popNMenu(\'fixpay\',1);"]') }
     get inputMonthlyPay () { return $('//input[@id="cmonthlypay"]') }
+    get inputMonthlyPayLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.monthlyPay}")]`) }
     get inputLoanAmount () { return $('//input[@id="cloanamount"]') }
+    get inputLoanAmountLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.loanAmount}")]`) }
     get inputInterestRate () { return $('//input[@id="cinterestrate"]') }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]')}
+    get resultContainer () { return $('//div[@class="rightresult"]') }
     get resultHeader () { return $('//h2[@class="h2result"]') }
     get resultText () { return $('(//div[@class="rightresult"]/div)[2]') }
     get resultTableRows () { return $$('(//table[@class="cinfoT"]/tbody)[1]/tr')}
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessages () { return $$('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]/div/font')}
     get inputContainer () { return $('//div[@class="panel2"]/table') }
+    get inputForm () { return $('//form[@name="calform"]') }
 
     // Component functions
     async calculate ({mode, loanTerm, monthlyPay, loanAmount, interestRate}) {
@@ -216,7 +222,7 @@ class Payment extends BasePage {
         'Instruction heading meets requirements': async () => {
             await this.assertOrderInDOM({
                 elementFirst: this.instructionHeadingImg,
-                elementSecond: $('//form[@name="calform"]')
+                elementSecond: this.inputForm
             })
             await this.assertAttributeValue( this.instructionHeadingImg, {
                 attribute: 'src',
@@ -230,7 +236,7 @@ class Payment extends BasePage {
         'Input container meets requirements': async () => {
             await this.assertOrderInDOM({
                 elementFirst: this.inputContainer,
-                elementSecond: $('//div[@class="rightresult"]')
+                elementSecond: this.resultContainer
             })
         },
         '2 Tab buttons labeled Fixed Term and Fixed Payments are present': async () => {
@@ -238,15 +244,15 @@ class Payment extends BasePage {
             await this.assertExists(this.buttonFixTerm)
         },
         'Loan Amount input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(),"Loan Amount")]'))
+            await this.assertDisplayed(this.inputLoanAmountLabel)
             await this.assertBackgroundImage(this.inputLoanAmount, {
                 expectedImageURL: this.requiredSymbols[1],
                 expectedPosition: '0% 50%'
             })
         },
         'Loan Term input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(),"Loan Term")]'))
-            await this.assertExists(this.inputLoanTerm)
+            await this.assertDisplayed(this.inputLoanTermLabel)
+            await this.assertDisplayed(this.inputLoanTerm)
             await this.assertExists($('//span[@class="inuiyearspan"][contains(text(),"years")]'))
         },
         'Interest Rate input and label meet requirements': async () => {
@@ -293,10 +299,11 @@ class Payment extends BasePage {
         },
         'After clicking Fixed Payments. Fixed Payment mode inputs are visible, and Fixed Term inputs are hidden': async () => {
             await this.buttonFixPay.click()
-            await expect(this.inputLoanTerm).not.toBeDisplayed()
-            await expect($('//td[contains(text(),"Loan Term")]')).not.toBeDisplayed()
-            await expect(this.inputMonthlyPay).toBeDisplayed()
-            await expect($('//td[contains(text(),"Monthly Pay")]')).toBeDisplayed()
+            await this.assertDisplayed(this.inputLoanTerm, false)
+            await this.assertDisplayed(this.inputLoanTermLabel, false)
+            await this.assertDisplayed(this.inputMonthlyPay)
+            await this.assertDisplayed(this.inputMonthlyPayLabel)
+            // await expect($('//td[contains(text(),"Monthly Pay")]')).toBeDisplayed()
         },
         'Fixed Term button meets hover and active requirements': async () => {
             // inactive state
@@ -316,13 +323,13 @@ class Payment extends BasePage {
             await this.buttonFixTerm.click()
             await expect(this.inputMonthlyPay).not.toBeDisplayed()
             await expect($('//td[contains(text(),"Monthly Pay")]')).not.toBeDisplayed()
-            await expect(this.inputLoanTerm).toBeDisplayed()
-            await expect($('//td[contains(text(),"Loan Term")]')).toBeDisplayed()
+            await this.assertDisplayed(this.inputLoanTerm)
+            await this.assertDisplayed(this.inputLoanTermLabel)
         },
         'Result section is placed to the right of inputs': async () => {
             await this.assertOrderInDOM({
                 elementFirst: this.inputContainer,
-                elementSecond: $('//div[@class="rightresult"]')
+                elementSecond: this.resultContainer
             })
         },
         'Results heading meets requirments': async () => {
