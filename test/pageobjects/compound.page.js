@@ -1,4 +1,4 @@
-import { $, expect } from '@wdio/globals'
+import { $ } from '@wdio/globals'
 import BasePage from './basepage.js';
 
 class CompoundInterest extends BasePage {
@@ -7,16 +7,21 @@ class CompoundInterest extends BasePage {
     // Required Text Values
     requiredText = {
         title: 'Compound Interest Calculator',
-        description: 'The Compound Interest Calculator below can be used to compare or convert the interest rates of different compounding periods. Please use our Interest Calculator to do actual calculations on compound interest.'
+        description: 'The Compound Interest Calculator below can be used to compare or convert the interest rates of different compounding periods. Please use our Interest Calculator to do actual calculations on compound interest.',
+        instructions: 'Modify the values and click the calculate button to use',
+        instructionsImgSrc: '//d26tpo4cm8sb6k.cloudfront.net/img/svg/insm.svg',
+        errorMessages: [ 'Please provide a numeric input interest rate.' ],
+        inputLabels: { inputInterest: 'Input Interest', outputInterest: 'Output Interest', compoundSelect: 'Compound' },
+        compoundSelectValues: [ 'annually', 'semiannually', 'quarterly', 'monthly', 'semimonthly', 'biweekly', 'weekly', 'daily', 'continuously' ]
     }
-    selectCompoundValues = [ 'annually', 'semiannually', 'quarterly', 'monthly', 'semimonthly', 'biweekly', 'weekly', 'daily', 'continuously']
-    
+
     // Element Selectors
     get componentHeading () { return $('//h1') }
     get componentDescription () { return $('(//div[@id="content"]/p)[1]') }
     get arrayOfComponentHeading () { return $$('//h1') }
     get instructionHeadingImg () { return $('//div[@id="insmdc"]/img') }
     get inputPanel () { return $('//table[@class="panel"]') }
+    get inputForm () { return $('//form[@name="calform"]') }
     get inputInterestRate () { return $('//input[@id="cinterestrate"]') }
     get selectInCompound () { return $('//select[@id="cincompound"]') }
     get selectOutCompound () { return $('//select[@id="coutcompound"]') }
@@ -24,10 +29,15 @@ class CompoundInterest extends BasePage {
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]') }
     get resultHeading () { return $('//h2[@class="h2result"]') }
     get resultText () { return $('//p[@class="verybigtext"]') }
+    get resultTextFont () { return $('//p[@class="verybigtext"]/b/font') }
     get outPutInterest () { return $('//td[@class="bigtext"][@align="center"]/font/b') }
     get outPutInterestFont () { return $('//td[@class="bigtext"][@align="center"]/font') }
     get errorSection () { return $('//div[@style="padding: 5px 0px 5px 30px;background-image: url(\'//d26tpo4cm8sb6k.cloudfront.net/img/svg/error.svg\');background-repeat: no-repeat;"]')}
     get errorMessage () { return this.errorSection.$('//div/font') }
+    get inputInterestRateLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.inputInterest}")]`)}
+    get outputInterestRateLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.outputInterest}")]`)}
+    get inputCompound1Label () { return $(`(//td[contains(text(),"${this.requiredText.inputLabels.compoundSelect}")])[1]`)}
+    get inputCompound2Label () { return $(`(//td[contains(text(),"${this.requiredText.inputLabels.compoundSelect}")])[2]`)}
 
     // Component functions
     async calculate ({interestRate, inCompound, outCompound}) {
@@ -36,30 +46,29 @@ class CompoundInterest extends BasePage {
         await this.selectOutCompound.selectByAttribute('value', outCompound)
         await this.buttonCalculate.click()
     }
-    async calcCombo ({interestRate, inCompoundOption, expectedResults}) {
-        await this.buttonClear.click()
-        let calcCount = 0
-        const array = this.selectCompoundValues
-            for (let c2 = 0; c2 < array.length; c2++) {
-                await this.calculate({
-                    interestRate: interestRate,
-                    inCompound: array[inCompoundOption],
-                    outCompound: array[c2]
-                })
-                if (expectedResults.length == 1) {
-                    await this.assertText(this.outPutInterest,{expectedText: expectedResults[0]})
-                } else {
-                    await this.assertText(this.outPutInterest,{expectedText: expectedResults[calcCount]})
-                }
-                calcCount++
-            }
-    }
     async verifyResult({text, output}) {
         await this.assertText(this.resultText,{expectedText: text})
         await this.assertText(this.outPutInterest,{expectedText: output})
     }
     async verifyInputsClear () {
         await this.assertText(this.inputInterestRate,{expectedText: ''})
+    }
+    async calcCombo ({interestRate, inCompoundOption, expectedResults}) {
+        const array = this.requiredText.compoundSelectValues
+        await this.buttonClear.click()
+        for (let i = 0; i < array.length; i++) {
+            await this.calculate({ 
+                interestRate: interestRate,
+                inCompound: array[inCompoundOption],
+                outCompound: array[i]
+            })
+            if (expectedResults.length == 1) { 
+                await this.assertText(this.outPutInterest, {expectedText: expectedResults[0]})
+            }
+            else { 
+                await this.assertText(this.outPutInterest, {expectedText: expectedResults[i]})
+            }
+        }
     }
 
     // Test logic
@@ -238,11 +247,11 @@ class CompoundInterest extends BasePage {
     ERROR = {
         'Error displayed when no input is calculated': async () => {
             await this.calculate({interestRate: '', inCompound: 'daily', outCompound: 'semimonthly'})
-            await expect(this.errorSection).toBeExisting()
-            await this.assertText(this.errorMessage,{expectedText:'Please provide a numeric input interest rate.'})
+            await this.assertExists(this.errorSection, true)
+            await this.assertText(this.errorMessage, {expectedText: this.requiredText.errorMessages[0]})
             await this.assertAttributeValue(this.errorMessage,{
                 attribute: 'color',
-                expectedValue: 'red'
+                expectedValue: this.requiredColorsFunctional.warning
             })
         },
         'Output Interest is displayed as ?%': async () => {
@@ -260,7 +269,7 @@ class CompoundInterest extends BasePage {
             })
             await this.assertColor( this.componentHeading, {
                 type: 'text', colorFormat: 'hex',
-                expectedColor: '#003366'
+                expectedColor: this.requiredColors[0]
             })
         },
         'Description element meets requirements': async () => {
@@ -271,15 +280,15 @@ class CompoundInterest extends BasePage {
         'Instruction heading meets requirements': async () => {
             await this.assertOrderInDOM({
                 elementFirst: this.instructionHeadingImg,
-                elementSecond: $('//form[@name="calform"]')
+                elementSecond: this.inputForm
             })
             await this.assertAttributeValue( this.instructionHeadingImg, {
                 attribute: 'src',
-                expectedValue: '//d26tpo4cm8sb6k.cloudfront.net/img/svg/insm.svg'
+                expectedValue: this.requiredText.instructionsImgSrc
             })
             await this.assertAttributeValue( this.instructionHeadingImg, {
                 attribute: 'alt',
-                expectedValue: 'Modify the values and click the calculate button to use'
+                expectedValue: this.requiredText.instructions
             })
         },
         'Input container meets requirements': async () => {
@@ -289,29 +298,29 @@ class CompoundInterest extends BasePage {
             })
             await this.assertColor( this.inputPanel, {
                 type: 'background', colorFormat: 'hex',
-                expectedColor: '#eeeeee'
+                expectedColor: this.requiredColors[1]
             })
             await this.assertCSSBorder( this.inputPanel, {
-                expectedColor: '#bbbbbb',
-                expectedStyle: 'solid',
-                expectedWidth: '1px'
+                expectedColor: this.requiredColors[2],
+                expectedStyle: this.requiredLineProperties[1],
+                expectedWidth: this.requiredLineProperties[0]
             })
         },
         'Interest Input and Label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(),"Input Interest")]'))
+            await this.assertDisplayed(this.inputInterestRateLabel)
             await this.assertBackgroundImage(this.inputInterestRate,{
-                expectedImageURL: 'url(\"data:image/svg+xml;utf8,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"17px\\\" height=\\\"20px\\\"><text x=\\\"1\\\" y=\\\"15\\\" style=\\\"font: normal 16px arial;\\\">%</text></svg>\")',
+                expectedImageURL: this.requiredSymbols[0],
                 expectedPosition: '100% 50%'
             })
         },
         'Compound 1 dropdown and Label meet requirements': async () => {
-            await this.assertExists($('(//td[contains(text(),"Compound")])[1]'))
-            for (const option of this.selectCompoundValues) {
+            await this.assertDisplayed(this.inputCompound1Label)
+            for (const option of this.requiredText.compoundSelectValues) {
                 await this.selectInCompound.selectByAttribute('value', option)
             }
         },
         'Output Interest element and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(),"Output Interest")]'))
+            await this.assertDisplayed(this.outputInterestRateLabel)
             await this.assertText(this.outPutInterest, {expectedText: expect.stringContaining('%')})
             await this.assertAttributeValue(this.outPutInterestFont,{
                 attribute: 'color',
@@ -319,15 +328,15 @@ class CompoundInterest extends BasePage {
             })
         },
         'Compound 2 dropdown and Label meet requirements': async () => {
-            await this.assertExists($('(//td[contains(text(),"Compound")])[2]'))
-            for (const option of this.selectCompoundValues) {
+            await this.assertDisplayed(this.inputCompound2Label)
+            for (const option of this.requiredText.compoundSelectValues) {
                 await this.selectOutCompound.selectByAttribute('value', option)
             }
         },
         'Instruction heading is removed after calculating valid input': async () => {
             await this.openComponentPage(this.endpoint)
             await this.calculate({interestRate: '10', inCompound: 'monthly', outCompound: 'daily' })
-            await expect(this.instructionHeadingImg).not.toBeExisting()
+            await this.assertExists(this.instructionHeadingImg, false)
         },
         'Result Heading meets requirements': async () => {
             await this.assertText ( this.resultHeading, {
@@ -343,29 +352,29 @@ class CompoundInterest extends BasePage {
             })
         },
         'Result text meets requirements': async () => {
-            await this.assertExists($('//p[@class="verybigtext"]'))
-            await this.assertAttributeValue($('//p[@class="verybigtext"]/b/font'),{
+            await this.assertDisplayed(this.resultText)
+            await this.assertAttributeValue(this.resultTextFont, {
                 attribute: 'color',
-                expectedValue: 'green'
+                expectedValue: this.requiredColorsFunctional.success
             })
         },
         'Instruction heading is removed after producing error': async () => {
             await this.openComponentPage(this.endpoint)
             await this.calculate({interestRate: '', inCompound: 'monthly', outCompound: 'annually' })
-            await expect(this.instructionHeadingImg).not.toBeExisting()
+            await this.assertExists(this.instructionHeadingImg, false)
         },
         'Error section meets display requirement': async () => {
-            await this.assertExists(this.errorSection)
+            await this.assertDisplayed(this.errorSection)
             await this.assertOrderInDOM({
                 elementFirst: this.errorSection,
                 elementSecond: this.inputPanel
             })
-            await this.assertExists(this.errorMessage)
+            await this.assertDisplayed(this.errorMessage)
         },
         'Error message meets color requirement': async () => {
             await this.assertAttributeValue(this.errorMessage,{
                 attribute: 'color',
-                expectedValue: 'red'
+                expectedValue: this.requiredColorsFunctional.warning
             })
         },
         'Output Interest meets error display requirement': async () => {
