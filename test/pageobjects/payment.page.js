@@ -8,7 +8,7 @@ class Payment extends BasePage {
     requiredText = {
         title: 'Payment Calculator',
         description: 'The Payment Calculator can determine the monthly payment amount or loan term for a fixed interest loan. Use the "Fixed Term" tab to calculate the monthly payment of a fixed-term loan. Use the "Fixed Payments" tab to calculate the time to pay off a loan with a fixed monthly payment. For more information about or to do calculations specifically for car payments, please use the Auto Loan Calculator. To find net payment of salary after taxes and deductions, use the Take-Home-Pay Calculator.',
-        inputLabels: { loanAmount: 'Loan Amount', loanTerm: 'Loan Term', monthlyPay: 'Monthly Pay' }
+        inputLabels: { loanAmount: 'Loan Amount', loanTerm: 'Loan Term', loanTermUnit: 'years', monthlyPay: 'Monthly Pay', interestRate: 'Interest Rate' }
     }
     // Element Selectors
     get componentHeading () { return $('//h1') }
@@ -22,8 +22,10 @@ class Payment extends BasePage {
     get inputMonthlyPay () { return $('//input[@id="cmonthlypay"]') }
     get inputMonthlyPayLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.monthlyPay}")]`) }
     get inputLoanAmount () { return $('//input[@id="cloanamount"]') }
+    get inputLoanTermUnit () { return $(`//span[@class="inuiyearspan"][contains(text(),"${this.requiredText.inputLabels.loanTermUnit}")]`) }
     get inputLoanAmountLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.loanAmount}")]`) }
     get inputInterestRate () { return $('//input[@id="cinterestrate"]') }
+    get inputInterestRateLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.interestRate}")]`) }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]') }
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]')}
     get resultContainer () { return $('//div[@class="rightresult"]') }
@@ -251,13 +253,13 @@ class Payment extends BasePage {
             })
         },
         'Loan Term input and label meet requirements': async () => {
-            await this.assertDisplayed(this.inputLoanTermLabel)
             await this.assertDisplayed(this.inputLoanTerm)
-            await this.assertExists($('//span[@class="inuiyearspan"][contains(text(),"years")]'))
+            await this.assertDisplayed(this.inputLoanTermUnit)
+            await this.assertDisplayed(this.inputLoanTermLabel)
         },
         'Interest Rate input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(),"Interest Rate")]'))
-            await this.assertExists(this.inputInterestRate)
+            await this.assertDisplayed(this.inputInterestRateLabel)
+            await this.assertDisplayed(this.inputInterestRate)
             await this.assertBackgroundImage(this.inputInterestRate, {
                 expectedImageURL: this.requiredSymbols[0],
                 expectedPosition: '100% 50%'
@@ -285,46 +287,45 @@ class Payment extends BasePage {
         },
         'Fixed Payment button meets hover and active requirements': async () => {
             // inactive state
-            await this.assertColor(this.buttonFixPay, {expectedColor: '#ffffff', type:'text', colorFormat: 'hex'})
-            await this.assertColor(this.buttonFixPay, {expectedColor: '#336699', type:'background', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixPay, {expectedColor: this.requiredColorsFunctional.important, type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixPay, {expectedColor: this.requiredColors[7], type:'background', colorFormat: 'hex'})
             // hover state
             await this.assertHoverEffectBGC(this.buttonFixPay,{
-                expectedBGColorOnHover: '#eeeeee'
+                expectedBGColorOnHover: this.requiredColors[1]
             })
             // click
             await this.buttonFixPay.click()
             // active state
-            await this.assertColor(this.buttonFixPay, {expectedColor: '#000000', type:'text', colorFormat: 'hex'})
-            await this.assertColor(this.buttonFixPay, {expectedColor: '#eeeeee', type:'background', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixPay, {expectedColor: this.requiredColors[8], type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixPay, {expectedColor: this.requiredColors[1], type:'background', colorFormat: 'hex'})
         },
         'After clicking Fixed Payments. Fixed Payment mode inputs are visible, and Fixed Term inputs are hidden': async () => {
             await this.buttonFixPay.click()
             await this.assertDisplayed(this.inputLoanTerm, false)
             await this.assertDisplayed(this.inputLoanTermLabel, false)
-            await this.assertDisplayed(this.inputMonthlyPay)
-            await this.assertDisplayed(this.inputMonthlyPayLabel)
-            // await expect($('//td[contains(text(),"Monthly Pay")]')).toBeDisplayed()
+            await this.assertDisplayed(this.inputMonthlyPay, true)
+            await this.assertDisplayed(this.inputMonthlyPayLabel, true)
         },
         'Fixed Term button meets hover and active requirements': async () => {
             // inactive state
-            await this.assertColor(this.buttonFixTerm, {expectedColor: '#ffffff', type:'text', colorFormat: 'hex'})
-            await this.assertColor(this.buttonFixTerm, {expectedColor: '#336699', type:'background', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixTerm, {expectedColor: this.requiredColorsFunctional.important, type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixTerm, {expectedColor: this.requiredColors[7], type:'background', colorFormat: 'hex'})
             // hover state
             await this.assertHoverEffectBGC(this.buttonFixTerm,{
-                expectedBGColorOnHover: '#eeeeee'
+                expectedBGColorOnHover: this.requiredColors[1]
             })
             // click
             await this.buttonFixTerm.click()
             // active state
-            await this.assertColor(this.buttonFixTerm, {expectedColor: '#000000', type:'text', colorFormat: 'hex'})
-            await this.assertColor(this.buttonFixTerm, {expectedColor: '#eeeeee', type:'background', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixTerm, {expectedColor: this.requiredColors[8], type:'text', colorFormat: 'hex'})
+            await this.assertColor(this.buttonFixTerm, {expectedColor: this.requiredColors[1], type:'background', colorFormat: 'hex'})
         },
         'After clicking Fixed Term. Fixed Term mode inputs are visible, and Fixed Payments inputs are hidden': async () => {
             await this.buttonFixTerm.click()
-            await expect(this.inputMonthlyPay).not.toBeDisplayed()
-            await expect($('//td[contains(text(),"Monthly Pay")]')).not.toBeDisplayed()
-            await this.assertDisplayed(this.inputLoanTerm)
-            await this.assertDisplayed(this.inputLoanTermLabel)
+            await this.assertDisplayed(this.inputLoanTerm, true)
+            await this.assertDisplayed(this.inputLoanTermLabel, true)
+            await this.assertDisplayed(this.inputMonthlyPay, false)
+            await this.assertDisplayed(this.inputMonthlyPayLabel, false)
         },
         'Result section is placed to the right of inputs': async () => {
             await this.assertOrderInDOM({
