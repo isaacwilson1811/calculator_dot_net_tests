@@ -1,4 +1,4 @@
-import { $, expect } from '@wdio/globals'
+import { $ } from '@wdio/globals'
 import BasePage from './basepage.js'
 
 class Salary extends BasePage {
@@ -8,7 +8,8 @@ class Salary extends BasePage {
     requiredText = {
         title: 'Salary Calculator',
         description: 'The Salary Calculator converts salary amounts to their corresponding values based on payment frequency. Examples of payment frequencies include biweekly, semi-monthly, or monthly payments. Results include unadjusted figures and adjusted figures that account for vacation days and holidays per year.',
-        additionalInfo: 'This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed to be holidays and vacation days adjusted values. This calculator also assumes 52 working weeks or 260 weekdays per year in its calculations. The unadjusted results ignore the holidays and paid vacation days.'
+        additionalInfo: 'This salary calculator assumes the hourly and daily salary inputs to be unadjusted values. All other pay frequency inputs are assumed to be holidays and vacation days adjusted values. This calculator also assumes 52 working weeks or 260 weekdays per year in its calculations. The unadjusted results ignore the holidays and paid vacation days.',
+        inputLabels: { salaryAmount: 'Salary amount', HPW: 'Hours per week', DPW: 'Days per week', HPY: 'Holidays per year', VPY: 'Vacation days per year' }
     }
     expectedUnitOptions = [
         {value: 'Hourly', text: 'Hour'},
@@ -30,11 +31,16 @@ class Salary extends BasePage {
     get inputContainer () { return $('//form[@name="calform"]/table[@class="panel"]') }
     get rightColumn () { return $('//div[@class="rightresult"]') }
     get inputSalaryAmount () { return $('//input[@id="camount"]') }
+    get inputSalaryAmountLabel () { return $(`//td[contains(text(),"${this.requiredText.inputLabels.salaryAmount}")]`) }
     get unitSelect () { return $('//select[@name="cunit"]')}
     get inputHoursPerWeek () { return $('//input[@id="chours"]') }
+    get inputHoursPerWeekLabel () { return $(`//td[contains(text(), "${this.requiredText.inputLabels.HPW}")]`) }
     get inputDaysPerWeek () { return $('//input[@id="cdays"]') }
+    get inputDaysPerWeekLabel () { return $(`//td[contains(text(), "${this.requiredText.inputLabels.DPW}")]`) }
     get inputHolidaysPerYear () { return $('//input[@id="cholidays"]') }
+    get inputHolidaysPerYearLabel () { return $(`//td[contains(text(), "${this.requiredText.inputLabels.HPY}")]`) }
     get inputVacationDaysPerYear () { return $('//input[@id="cvacation"]') }
+    get inputVacationDaysPerYearLabel () { return $(`//td[contains(text(), "${this.requiredText.inputLabels.VPY}")]`) }
     get buttonCalculate () { return $('//input[@type="submit"][@value="Calculate"]')}
     get buttonClear () { return $('//input[@type="button"][@value="Clear"]')}
     get buttonSave () { return $('//img[@src="//d26tpo4cm8sb6k.cloudfront.net/img/save.svg"]') }
@@ -264,16 +270,17 @@ class Salary extends BasePage {
             await this.assertColor( container, {
                 type: 'background',
                 colorFormat: 'hex',
-                expectedColor: '#eeeeee'
+                expectedColor: this.requiredColors[1]
             })
             await this.assertCSSBorder( container, {
-                expectedColor:'#bbbbbb',
+                expectedColor: this.requiredColors[2],
                 expectedWidth: '1px',
                 expectedStyle: 'solid'
             })
         },
         'Salary ammount input and label meet requirements': async () => {
-            await expect($('//td[contains(text(),"Salary amount")]')).toBeExisting()
+            await this.assertDisplayed(this.inputSalaryAmountLabel)
+            await this.assertDisplayed(this.inputSalaryAmount)
             await this.assertBackgroundImage ( this.inputSalaryAmount, {
                 expectedImageURL: this.requiredSymbols[1],
                 expectedPosition: '0% 50%'
@@ -288,20 +295,20 @@ class Salary extends BasePage {
             }
         },
         'Hours per week input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(), "Hours per week")]'))
-            await this.assertExists(this.inputHoursPerWeek)
+            await this.assertDisplayed(this.inputHoursPerWeekLabel)
+            await this.assertDisplayed(this.inputHoursPerWeek)
         },
         'Days per week input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(), "Days per week")]'))
-            await this.assertExists(this.inputDaysPerWeek)
+            await this.assertDisplayed(this.inputDaysPerWeekLabel)
+            await this.assertDisplayed(this.inputDaysPerWeek)
         },
         'Holidays per year input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(), "Holidays per year")]'))
-            await this.assertExists(this.inputHolidaysPerYear)
+            await this.assertDisplayed(this.inputHolidaysPerYearLabel)
+            await this.assertDisplayed(this.inputHolidaysPerYear)
         },
         'Vacation days per year input and label meet requirements': async () => {
-            await this.assertExists($('//td[contains(text(), "Vacation days per year")]'))
-            await this.assertExists(this.inputVacationDaysPerYear)
+            await this.assertDisplayed(this.inputVacationDaysPerYearLabel)
+            await this.assertDisplayed(this.inputVacationDaysPerYear)
         },
         'Calculate button meets requirements': async () => {
             const button = this.buttonCalculate
@@ -354,20 +361,20 @@ class Salary extends BasePage {
         'Top row of results table meets requirements': async () => {
             const td1 = $('(((//table[@class="cinfoT"])[1]/tbody/tr)[1]/td)[1]')
             await this.assertText(td1,{expectedText: ''})
-            await this.assertColor(td1,{type:'text',colorFormat:'hex', expectedColor:'#ffffff'})
-            await this.assertColor(td1,{type:'background',colorFormat:'hex', expectedColor:'#336699'})
+            await this.assertColor(td1,{type:'text',colorFormat:'hex', expectedColor: this.requiredColorsFunctional.important})
+            await this.assertColor(td1,{type:'background',colorFormat:'hex', expectedColor: this.requiredColors[7]})
             const td2 = $('(((//table[@class="cinfoT"])[1]/tbody/tr)[1]/td)[2]')
             await this.assertText(td2,{expectedText: 'Unadjusted'})
-            await this.assertColor(td2,{type:'text',colorFormat:'hex', expectedColor:'#ffffff'})
-            await this.assertColor(td2,{type:'background',colorFormat:'hex', expectedColor:'#336699'})
+            await this.assertColor(td2,{type:'text',colorFormat:'hex', expectedColor: this.requiredColorsFunctional.important})
+            await this.assertColor(td2,{type:'background',colorFormat:'hex', expectedColor: this.requiredColors[7]})
             const td3 = $('(((//table[@class="cinfoT"])[1]/tbody/tr)[1]/td)[3]')
             await this.assertText(td3,{expectedText: 'Holidays & vacation days adjusted'})
-            await this.assertColor(td3,{type:'text',colorFormat:'hex', expectedColor:'#ffffff'})
-            await this.assertColor(td3,{type:'background',colorFormat:'hex', expectedColor:'#336699'})
+            await this.assertColor(td3,{type:'text',colorFormat:'hex', expectedColor: this.requiredColorsFunctional.important})
+            await this.assertColor(td3,{type:'background',colorFormat:'hex', expectedColor: this.requiredColors[7]})
         },
         'Data rows of result table meet background color and border requirements. Columns are labeled and meet text requirments.': async () => {
             const columnLabels = ['0','','Hourly', 'Daily', 'Weekly', 'Bi-weekly', 'Semi-monthly', 'Monthly', 'Quarterly', 'Annual']
-            const rowBGColor = {odd: '#ffffff', even: '#eeeeee'}
+            const rowBGColor = {odd: this.requiredColorsFunctional.important, even: this.requiredColors[1]}
             for (let row = 2; row < 9; row++) {
                 const currentRow = $(`((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]`)
                 await this.assertColor(currentRow,{
@@ -377,7 +384,7 @@ class Salary extends BasePage {
                 for (let col = 1; col < 4; col++){
                     const currentCell = $(`(((//table[@class="cinfoT"])[1]/tbody/tr)[${row}]/td)[${col}]`)
                     await this.assertCSSBorder(currentCell, {
-                        expectedColor:'#cccccc',
+                        expectedColor: this.requiredColors[9],
                         expectedWidth: '1px',
                         expectedStyle: 'solid'
                     })
