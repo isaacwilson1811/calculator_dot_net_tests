@@ -25,7 +25,10 @@ export default class BasePage {
         GUI['Design Requirements'].visuals.approvedColors.backgrounds['Go Money Green'],
         GUI['Design Requirements'].visuals.approvedColors.backgrounds['Luxurious Granite'],
         GUI['Design Requirements'].visuals.approvedColors.backgrounds['Mistake Grey'],
-        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Results Green']
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Results Green'],
+        GUI['Design Requirements'].visuals.approvedColors.backgrounds['Inactive Tab'],
+        GUI['Design Requirements'].visuals.approvedColors.accentText['Eternal Darkness'],
+        GUI['Design Requirements'].visuals.approvedColors.borders['Subtle']
     ]
     requiredColorsFunctional = {
         warning: GUI['Design Requirements'].visuals.approvedColors.functional.warning,

@@ -1,5 +1,5 @@
-// Simulates some type of external configuration.
-// Change the values here and all of the tests will be updated.
+// Requirement Configuration data.
+// Values defined here are used in test assertions.
 class GUI {
     'Design Requirements' = {
         visuals: {
@@ -10,18 +10,20 @@ class GUI {
                     important: '#ffffff'
                 },
                 accentText: {
-                    'Silian Grail':
-                    '#003366'
+                    'Silian Grail': '#003366',
+                    'Eternal Darkness': '#000000'
                 },
                 borders: {
-                    'Eggshell': '#bbbbbb'
+                    'Eggshell': '#bbbbbb',
+                    'Subtle': '#cccccc'
                 },
                 backgrounds: {
                     'Bone': '#eeeeee',
                     'Go Money Green': '#4c7b25',
                     'Luxurious Granite': '#444444',
                     'Mistake Grey': '#ababab',
-                    'Results Green': '#518428'
+                    'Results Green': '#518428',
+                    'Inactive Tab': '#336699'
                 }
             },
             lines: {
